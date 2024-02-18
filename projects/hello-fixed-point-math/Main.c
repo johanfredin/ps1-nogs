@@ -1,7 +1,7 @@
 #include <libgpu.h>
 #include <libetc.h>
 #include <libapi.h>
-#include "../../lib/header/Logger.h"
+#include "../../lib/Logger.h"
 
 #define SCREEN_W 320
 #define SCREEN_H 240

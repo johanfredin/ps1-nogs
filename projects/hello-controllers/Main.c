@@ -1,6 +1,7 @@
 #include <libgpu.h>
 #include <libetc.h>
-#include "../../lib/header/Controller.h"
+
+#include "../../lib/Controller.h"
 
 #define SCREEN_W 320
 #define SCREEN_H 240

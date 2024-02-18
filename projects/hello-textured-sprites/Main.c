@@ -1,8 +1,8 @@
 #include "libgpu.h"
 #include "libetc.h"
-#include "../../lib/header/CdReader.h"
-#include "../../lib/header/Logger.h"
-#include "../../lib/header/MemUtils.h"
+#include "../../lib/CdReader.h"
+#include "../../lib/Logger.h"
+#include "../../lib/MemUtils.h"
 
 #define SCREEN_W 320
 #define SCREEN_H 240

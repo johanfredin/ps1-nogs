@@ -3,19 +3,12 @@ TYPE = ps-exe
 THIS_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 SRCS += $(THIS_DIR)third_party/nugget/common/crt0/crt0.s \
-$(THIS_DIR)lib/source/AssetManager.c \
-$(THIS_DIR)lib/source/CdReader.c \
-$(THIS_DIR)lib/source/CollisionHandler.c \
-$(THIS_DIR)lib/source/Controller.c \
-$(THIS_DIR)lib/source/Frames.c \
-$(THIS_DIR)lib/source/GameObject.c \
-$(THIS_DIR)lib/source/GPUBase.c \
-$(THIS_DIR)lib/source/JSONParser.c \
-$(THIS_DIR)lib/source/Logger.c \
-$(THIS_DIR)lib/source/TextBox.c \
-$(THIS_DIR)lib/source/Tiled.c \
-$(THIS_DIR)lib/source/TileFetcher.c \
-$(THIS_DIR)lib/source/TxtHandler.c \
+$(THIS_DIR)lib/AssetManager.c \
+$(THIS_DIR)lib/CdReader.c \
+$(THIS_DIR)lib/Controller.c \
+$(THIS_DIR)lib/JSONParser.c \
+$(THIS_DIR)lib/Logger.c \
+$(THIS_DIR)lib/Tiled.c \
 
 CPPFLAGS += -I$(THIS_DIR)third_party/psyq-iwyu/include -I$(THIS_DIR)lib/header
 LDFLAGS += -L$(THIS_DIR)third_party/psyq/lib
