@@ -15,25 +15,7 @@ DRAWENV draw_env[NUM_BUFFERS];
 u_long ot[NUM_BUFFERS][OT_LEN];
 
 // Current buffer
-u_char db;
-
-// Primitive buffer (from LameGuy tutorial):
-/*
- A primitive buffer is simply a global array of char elements used as a buffer to define primitive packets to.
- It is also a lot less wasteful than defining multiple arrays for different primitive types as all primitive
- types can be defined in just a single global buffer. The reason it is recommended that primitive packets
- must be defined in a global buffer is because the primitives must exist in memory until the GPU gets around
- to processing it. If you were to define primitives as a local variable in a function and register it to an
- ordering table, that primitive has most likely been overwritten by other things (since locals are generally
- temporary variables), resulting in a corrupted ordering table which would result to a GPU lock up or crash.
- A primitive buffer can be defined as such, 32KB buffer for primitives should be plenty.
- */
-char prim_buff[NUM_BUFFERS][PRIM_BUFF_32K];
-/*
- The next_prim variable will be used to keep track where the next primitive should be written to.
- Therefore, this variable must be set to the first primitive buffer and reset in your display function.
- */
-char *next_prim = NULL;
+u_char current_buffer;
 
 void init() {
     // Reset gpu and enable interrupts
@@ -62,23 +44,18 @@ void init() {
     PutDispEnv(&disp_env[0]);
     PutDrawEnv(&draw_env[0]);
 
-    db = 0;
+    current_buffer = 0;
 
     FntLoad(960, 0);
     FntOpen(20, 20, SCREEN_W, 50, 0, 256);
 
-    next_prim = prim_buff[0];
 }
 
-TILE *init_tile(short x, short y, u_short w, u_short h, u_char r, u_char g, u_char  b) {
-    TILE *tile = (TILE *) next_prim;
+void init_tile(TILE *tile, short x, short y, u_short w, u_short h, u_char r, u_char g, u_char  b) {
     setTile(tile);
     setXY0(tile, x, y);
     setWH(tile, w, h);
     setRGB0(tile, r, g, b);
-    addPrim(ot[db], tile);
-    next_prim += sizeof(TILE);
-    return tile;
 }
 
 void display() {
@@ -87,28 +64,30 @@ void display() {
     VSync(0);
 
     // Apply environments
-    PutDispEnv(&disp_env[db]);
-    PutDrawEnv(&draw_env[db]);
+    PutDispEnv(&disp_env[current_buffer]);
+    PutDrawEnv(&draw_env[current_buffer]);
 
     // Enable display
     SetDispMask(1);
 
     // Draw the ordering table
-    DrawOTag(&ot[db][OT_LEN - 1]);
+    DrawOTag(&ot[current_buffer][OT_LEN - 1]);
 
     // Flip current buffer
-    db = !db;
-    next_prim = prim_buff[db];  // Reset the next primitive pointer
+    current_buffer = !current_buffer;
 }
 
 int main() {
     init();
+    TILE tile1, tile2;
+    init_tile(&tile1, 60, 70, 32, 32, 110, 255, 0);
+    init_tile(&tile2, 50, 50, 32, 32, 0, 255, 255);
 
     while (1) {
         // Clear ot
-        ClearOTagR(ot[db], OT_LEN);
-        init_tile(60, 70, 32, 32, 110, 255, 0);
-        init_tile(50, 50, 32, 32, 0, 255, 255);
+        ClearOTagR(ot[current_buffer], OT_LEN);
+        addPrim(ot[current_buffer], &tile1);
+        addPrim(ot[current_buffer], &tile2);
 
         FntPrint("Hello Flat Shaded TILE %d", sizeof(TILE));
         FntFlush(-1);

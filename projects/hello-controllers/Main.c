@@ -10,7 +10,7 @@
 DISPENV disp_env[NUM_BUFFERS];
 DRAWENV draw_env[NUM_BUFFERS];
 
-u_char db;
+u_char current_buffer;
 
 void init() {
     // Reset gpu and enable interrupts
@@ -39,7 +39,7 @@ void init() {
     PutDispEnv(&disp_env[0]);
     PutDrawEnv(&draw_env[0]);
 
-    db = 0;
+    current_buffer = 0;
 
     FntLoad(960, 0);
     FntOpen(20, 20, SCREEN_W, 50, 0, 256);
@@ -51,33 +51,15 @@ void display() {
     VSync(0);
 
     // Flip current buffer
-    db = !db;
+    current_buffer = !current_buffer;
 
     // Apply environments
-    PutDispEnv(&disp_env[db]);
-    PutDrawEnv(&draw_env[db]);
+    PutDispEnv(&disp_env[current_buffer]);
+    PutDrawEnv(&draw_env[current_buffer]);
 
     // Enable display
     SetDispMask(1);
 }
-
-//void init_pad(PadType *pad, u_char *buffer) {
-//    // First byte in buffer determines if the controller is connected or not (0 = yes, 1 = no)
-//    if (buffer[0] == CTRL_STAT_CONNECTED) {
-//        pad->stat = CTRL_STAT_CONNECTED;
-//
-//        /*
-//        * The following byte is the controller ID, denoting both the controller type and the number of bytes the controller has sent to the console.
-//         * The controller type is stored in the upper 4 bits of the ID byte while the data byte is at the lower 4 bits.
-//        */
-//        pad->type = buffer[1] >> 4;
-//        pad->len = buffer[1] & 0x0F;
-//        logr_log(INFO, "Main.c", "init_pad", "Controller connected, type=%d", pad->type);
-//    } else {
-//        logr_log(INFO, "Main.c", "init_pad", "Controller not connected");
-//    }
-//
-//}
 
 void check_pad(Controller *pad) {
     // Get the id

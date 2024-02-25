@@ -54,7 +54,7 @@ typedef struct PadType {
 DISPENV disp_env[NUM_BUFFERS];
 DRAWENV draw_env[NUM_BUFFERS];
 
-u_char db;
+u_char current_buffer;
 
 // Ordering table
 u_long ot[NUM_BUFFERS][OT_LEN];
@@ -102,7 +102,7 @@ void init() {
     PutDispEnv(&disp_env[0]);
     PutDrawEnv(&draw_env[0]);
 
-    db = 0;
+    current_buffer = 0;
 
     FntLoad(960, 0);
     FntOpen(20, 20, SCREEN_W, 50, 0, 256);
@@ -125,11 +125,11 @@ void display() {
     VSync(0);
 
     // Flip current buffer
-    db = !db;
+    current_buffer = !current_buffer;
 
     // Apply environments
-    PutDispEnv(&disp_env[db]);
-    PutDrawEnv(&draw_env[db]);
+    PutDispEnv(&disp_env[current_buffer]);
+    PutDrawEnv(&draw_env[current_buffer]);
 
     // Enable display
     SetDispMask(1);
@@ -199,7 +199,7 @@ void init_poly() {
     setTile(tile16);
     setXY0(tile16, ONE * disp_env[0].disp.w >> 1, ONE * disp_env[0].disp.h >> 1);
     setRGB0(tile16, 128, 128, 128);
-    addPrim(ot[db], tile16);
+    addPrim(ot[current_buffer], tile16);
 
 }
 
@@ -216,7 +216,7 @@ int main() {
     while (1) {
         FntPrint("Hello Controllers!\n");
         check_pad(p1);
-        DrawOTag(ot[db]);
+        DrawOTag(ot[current_buffer]);
         FntFlush(-1);
         display();
     }

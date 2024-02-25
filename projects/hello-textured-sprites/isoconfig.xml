@@ -9,7 +9,8 @@
 
 			<file name="CAPPY.TIM"		type="data"	source="../../assets/tim/capmv.tim"/>
 			<file name="CRASH.TIM"		type="data"	source="../../assets/tim/crash16.tim"/>
-			<file name="RAICHU.TIM"		type="data"	source="../../assets/tim/RAICHU_4.TIM"/>
+			<file name="RAICHU.TIM"		type="data"	source="../../assets/tim/raichu.tim"/>
+			<file name="PSYDUCK.TIM"		type="data"	source="../../assets/tim/psyduck.tim"/>
 
 			<!-- Add your own files or folders here -->
 			<dummy sectors="1024"/>

@@ -7,7 +7,7 @@
 
 DISPENV disp_env[NUM_BUFFERS];
 DRAWENV draw_env[NUM_BUFFERS];
-int db;
+int current_buffer;
 
 
 void init() {
@@ -37,7 +37,7 @@ void init() {
     PutDispEnv(&disp_env[0]);
     PutDrawEnv(&draw_env[0]);
 
-    db = 0;
+    current_buffer = 0;
 
     FntLoad(960, 0);
     FntOpen(20, 20, SCREEN_W, 50, 0, 256);
@@ -49,11 +49,11 @@ void display() {
     VSync(0);
 
     // Flip current buffer
-    db = !db;
+    current_buffer = !current_buffer;
 
     // Apply environments
-    PutDispEnv(&disp_env[db]);
-    PutDrawEnv(&draw_env[db]);
+    PutDispEnv(&disp_env[current_buffer]);
+    PutDrawEnv(&draw_env[current_buffer]);
 
     // Enable display
     SetDispMask(1);
@@ -63,7 +63,7 @@ int main() {
     init();
 
     while(1) {
-        FntPrint("Hello LibGPU, curr buff = %d", db);
+        FntPrint("Hello LibGPU, curr buff = %d", current_buffer);
         FntFlush(-1);
 
         display();

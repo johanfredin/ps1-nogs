@@ -25,7 +25,7 @@
 #define ASMG_AUDIO_SKIP_VAG_HEADER(vag) ((vag) += ASMG_VAG_HEADER_BYTE_SIZE)
 
 void asmg_load_tim_data(TIM_IMAGE *tim_data, CdrData *cdr_data);
-void asmg_load_sprt(SPRT *sprite, CdrData *data);
+void asmg_load_sprt(SPRT *sprite, TIM_IMAGE *tim, CdrData *data);
 void asmg_audio_init();
 void asmg_transfer_vag_to_spu(CdrData *cdr_data, u_long voice_channel);
 

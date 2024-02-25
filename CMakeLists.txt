@@ -32,5 +32,7 @@ add_executable(
         projects/hello-textured-sprites/Main.c
         projects/hello-controllers/Main.c
         projects/hello-fixed-point-math/Main.c
+        lib/Graphics.c
+        lib/Graphics.h
 
 )

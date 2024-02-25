@@ -3,6 +3,7 @@
 
 #include "AssetManager.h"
 #include "Logger.h"
+#include "Graphics.h"
 
 /*
  * Get the vram tim_data size using bitplane info (because vram position is in 16bits mode only)
@@ -25,7 +26,7 @@ void asmg_load_tim_data(TIM_IMAGE *tim_data, CdrData *cdr_data) {
     LoadImage(tim_data->prect, tim_data->paddr);
     DrawSync(0);
     logr_log(INFO, "Main.c", "load_tim_data",
-             "Texture loaded from %s {x, y, w, h}=%d, %d", cdr_data, tim_data->prect->x, tim_data->prect->y,
+             "Texture loaded from %s {x, y, w, h}=%d, %d, %d, %d", cdr_data->name, tim_data->prect->x, tim_data->prect->y,
              tim_data->prect->w, tim_data->prect->h);
 
     // Upload CLUT to framebuffer if present
@@ -33,29 +34,28 @@ void asmg_load_tim_data(TIM_IMAGE *tim_data, CdrData *cdr_data) {
         LoadImage(tim_data->crect, tim_data->caddr);
         DrawSync(0);
         logr_log(INFO, "Main.c", "load_tim_data",
-                 "Clut added for %s {x, y}=%d, %d", cdr_data, tim_data->crect->x, tim_data->crect->y);
+                 "Clut added for %s {x, y}=%d, %d", cdr_data->name, tim_data->crect->x, tim_data->crect->y);
     }
 }
 
-void asmg_load_sprite(SPRT *sprite, CdrData *cdr_data) {
-    TIM_IMAGE tim;
-    asmg_load_tim_data(&tim, cdr_data);
+void asmg_load_sprt(SPRT *sprite, TIM_IMAGE *tim, CdrData *cdr_data) {
+    asmg_load_tim_data(tim, cdr_data);
 
     setSprt(sprite);
 
     // Set sprite size
-    short w = sprite->w = tim.prect->w << (2 - tim.mode & 0x3);
-    short h = sprite->h = tim.prect->h;
+    short w = sprite->w = tim->prect->w << (2 - tim->mode & 0x3);
+    short h = sprite->h = tim->prect->h;
     setWH(sprite, w, h);
 
     // Get CLUT values (if sprite not 16 bit)
-    if (tim.mode & 0x8) {
-        sprite->clut = getClut(tim.crect->x, tim.crect->y);
+    if (tim->mode & 0x8) {
+        sprite->clut = getClut(tim->crect->x, tim->crect->y);
     }
 
     // Set UV offset
-    u_short sprite_u = ((tim.prect->x & 0x3f) << (2 - tim.mode & 0x3));
-    u_short sprite_v = (tim.prect->y & 0xff);
+    u_short sprite_u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
+    u_short sprite_v = (tim->prect->y & 0xff);
     setUV0(sprite, sprite_u, sprite_v);
     setRGB0(sprite, 128, 128, 128);
 
