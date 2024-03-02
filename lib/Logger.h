@@ -26,13 +26,11 @@ void logr_log(unsigned char level, char *src_file, char *src_func, char *msg, ..
     logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "*********************");     \
     logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "w=%d", (gobj)->w);             \
     logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "h=%d", (gobj)->h);             \
-    logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "image=%d", (gobj)->sprite);   \
     logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "x_speed=%d", (gobj)->x_speed); \
     logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "y_speed=%d", (gobj)->y_speed); \
     logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "health=%d", (gobj)->health);   \
-    logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "spawn_x=%d", (gobj)->spawn_x); \
-    logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "spawn_y=%d", (gobj)->spawn_y); \
-    logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "type=%d", (gobj)->type)
+    logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "spawn_x=%d", (gobj)->x); \
+    logr_log(level, "Logger.h", "LOGR_LOG_GOBJ", "spawn_y=%d", (gobj)->y)
 
 #define LOGR_LOG_TELEPORT(level, teleport)                                              \
     logr_log(level, "Logger.h", "LOGR_LOG_TELEPORT", "*********************");          \

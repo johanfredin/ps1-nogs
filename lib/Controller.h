@@ -38,6 +38,8 @@
 #define CTRL_BTN_CROSS       16384
 #define CTRL_BTN_SQUARE      32768
 
+#define CTRL_NO_INPUT(ctrl) (ctrl)->curr_btn & 0xffff
+
 #define CTRL_IS_BTN_SELECT(controller) !((controller)->curr_btn & CTRL_BTN_SELECT)
 #define CTRL_IS_BTN_L3(controller) !((controller)->curr_btn & CTRL_BTN_L3)
 #define CTRL_IS_BTN_R3(controller) !((controller)->curr_btn & CTRL_BTN_R3)

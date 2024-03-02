@@ -25,14 +25,20 @@ add_executable(
         lib/Tiled.c
         lib/Controller.h
         lib/Controller.c
+        lib/Graphics.c
+        lib/Graphics.h
+        lib/Animation.c
+        lib/Animation.h
 
         # NON LIBGS Projects
         projects/hello-debug-font/Main.c
         projects/hello-flat-shaded-polys/Main.c
         projects/hello-textured-sprites/Main.c
         projects/hello-controllers/Main.c
-        projects/hello-fixed-point-math/Main.c
-        lib/Graphics.c
-        lib/Graphics.h
+        projects/hello-rotating-polys/Main.c
+        projects/hello-animation/Main.c
+        lib/GameObject.h
+        lib/GameObject.c
+
 
 )

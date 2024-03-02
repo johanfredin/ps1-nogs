@@ -1,74 +1,106 @@
 #include "libgpu.h"
-#include "libetc.h"
+#include "../../lib/CdReader.h"
+#include "../../lib/Logger.h"
+#include "../../lib/MemUtils.h"
+#include "../../lib/Graphics.h"
+#include "../../lib/AssetManager.h"
+#include "../../lib/Controller.h"
 
-#define SCREEN_W 320
-#define SCREEN_H 240
-#define NUM_BUFFERS 2
-
-DISPENV disp_env[NUM_BUFFERS];
-DRAWENV draw_env[NUM_BUFFERS];
-int db;
-
-
-void init() {
-    // Reset gpu and enable interrupts
-    ResetGraph(0);
-
-    // Set the video mode (default is NTSC so not required here)
-    SetVideoMode(MODE_NTSC);
-
-    // Configure the DISPENVs for NTSC mode
-    SetDefDispEnv(&disp_env[0], 0, 0, SCREEN_W, SCREEN_H);
-    SetDefDispEnv(&disp_env[1], 0, SCREEN_H, SCREEN_W, SCREEN_H);
-
-    // Configure the pair of DRAWENVs for the DISPENVs
-    SetDefDrawEnv(&draw_env[0], 0, SCREEN_H, SCREEN_W, SCREEN_H);
-    SetDefDrawEnv(&draw_env[1], 0, 0, SCREEN_W, SCREEN_H);
-
-    // Specifies the clear color of the DRAWENV
-    setRGB0(&draw_env[0], 63, 0, 127);
-    setRGB0(&draw_env[1], 63, 0, 127);
-
-    // Enable background clear
-    draw_env[0].isbg = 1;
-    draw_env[1].isbg = 1;
-
-    // Apply environments
-    PutDispEnv(&disp_env[0]);
-    PutDrawEnv(&draw_env[0]);
-
-    db = 0;
-
-    FntLoad(960, 0);
-    FntOpen(20, 20, SCREEN_W, 50, 0, 256);
-}
-
-void display() {
-    // Wait for GPU to finish drawing and V-Blank
-    DrawSync(0);
-    VSync(0);
-
-    // Flip current buffer
-    db = !db;
-
-    // Apply environments
-    PutDispEnv(&disp_env[db]);
-    PutDrawEnv(&draw_env[db]);
-
-    // Enable display
-    SetDispMask(1);
-}
+void check_pad(Controller *pad);
 
 int main() {
-    init();
+    SPRT raichu_8bit;
+    DR_TPAGE dr_tpage_8bit_raichu;
+    TIM_IMAGE tim_raichu;
 
-    while(1) {
-        FntPrint("Hello $template, curr buff = %d", db);
-        FntFlush(-1);
+    // Initialize system
+    gfx_init();
 
-        display();
+    ctrl_init();
+
+    Controller *p1 = ctrl_read(CTRL_PAD_1);
+
+    MEM_INIT_HEAP_3();
+    CDR_INIT();
+    // Acquire crash and cappy tims from cd
+    CdrData *data_raichu = cdr_read_file("RAICHU.TIM");
+    CDR_CLOSE();
+
+    // Acquire tim data
+    asmg_load_sprt(&raichu_8bit, &tim_raichu, data_raichu);
+
+    // Init dr tpages
+    GFX_DR_TPAGE_INIT(&dr_tpage_8bit_raichu, &tim_raichu);
+
+    CDR_DATA_FREE(data_raichu);
+
+    // Cappy is a sprite sheet, we want one frame only
+    while (1) {
+        // Clear ot
+        gfx_clear_ot();
+
+        FntPrint("                  Hello $template\n");
+
+        gfx_sort_sprt(&raichu_8bit);
+        gfx_sort_dr_tpage(&dr_tpage_8bit_raichu);
+
+
+        gfx_display();
     }
 }
+
+
+void check_pad(Controller *pad) {
+    // Get the id
+    char *current_button = "";
+    if (CTRL_IS_CONNECTED(pad)) {
+        if (CTRL_IS_BTN_UP(pad)) {
+            current_button = "UP";
+        }
+        if (CTRL_IS_BTN_DOWN(pad)) {
+            current_button = "DOWN";
+        }
+        if (CTRL_IS_BTN_LEFT(pad)) {
+            current_button = "LEFT";
+        }
+        if (CTRL_IS_BTN_RIGHT(pad)) {
+            current_button = "RIGHT";
+        }
+        if (CTRL_IS_BTN_CROSS(pad)) {
+            current_button = "X";
+        }
+        if (CTRL_IS_BTN_SQUARE(pad)) {
+            current_button = "[]";
+        }
+        if (CTRL_IS_BTN_CIRCLE(pad)) {
+            current_button = "()";
+        }
+        if (CTRL_IS_BTN_TRIANGLE(pad)) {
+            current_button = "/\\";
+        }
+        if (CTRL_IS_BTN_START(pad)) {
+            current_button = "START";
+        }
+        if (CTRL_IS_BTN_SELECT(pad)) {
+            current_button = "SELECT";
+        }
+        if (CTRL_IS_BTN_R1(pad)) {
+            current_button = "R1";
+        }
+        if (CTRL_IS_BTN_R2(pad)) {
+            current_button = "R2";
+        }
+        if (CTRL_IS_BTN_L1(pad)) {
+            current_button = "L1";
+        }
+        if (CTRL_IS_BTN_L2(pad)) {
+            current_button = "L2";
+        }
+        FntPrint("Controller connected\nButton pressed=%s", current_button);
+    }
+
+}
+
 
 
 

@@ -9,7 +9,8 @@ $(THIS_DIR)lib/Controller.c \
 $(THIS_DIR)lib/JSONParser.c \
 $(THIS_DIR)lib/Logger.c \
 $(THIS_DIR)lib/Tiled.c \
-$(THIS_DIR)lib/Graphics \
+$(THIS_DIR)lib/Graphics.c \
+$(THIS_DIR)lib/Animation.c \
 
 CPPFLAGS += -I$(THIS_DIR)third_party/psyq-iwyu/include -I$(THIS_DIR)lib/header
 LDFLAGS += -L$(THIS_DIR)third_party/psyq/lib

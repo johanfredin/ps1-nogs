@@ -21,6 +21,7 @@ void gfx_clear_ot();
 void gfx_display();
 
 void gfx_sort_sprt(SPRT *sprt);
+void gfx_sort_sprt_with_tpage(SPRT *sprt, DR_TPAGE *dr_tpage);
 void gfx_sort_tile(TILE *tile);
 void gfx_sort_dr_tpage(DR_TPAGE *dr_tpage);
 

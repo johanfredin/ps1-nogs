@@ -1,7 +1,7 @@
 .PHONY: all cleansub
 all:
 	mkpsxiso -y isoconfig.xml
-	rm -f hello-fixed-point-math hello-fixed-point-math.bin
+	rm -f hello-rotating-polys hello-rotating-polys.bin
 	rm -f *.map
 	rm -f *.elf
 	rm -f *.o rm -f *.dep
@@ -9,9 +9,9 @@ all:
 
 cleansub:
 	$(MAKE) clean
-	rm -f hello-fixed-point-math.cue hello-fixed-point-math.bin
+	rm -f hello-rotating-polys.cue hello-rotating-polys.bin
 
-TARGET = hello-fixed-point-math
+TARGET = hello-rotating-polys
 SRCS = Main.c
 
 include ../../Makefile

@@ -47,6 +47,7 @@ void asmg_load_sprt(SPRT *sprite, TIM_IMAGE *tim, CdrData *cdr_data) {
     short w = sprite->w = tim->prect->w << (2 - tim->mode & 0x3);
     short h = sprite->h = tim->prect->h;
     setWH(sprite, w, h);
+    setXY0(sprite, 0, 0);
 
     // Get CLUT values (if sprite not 16 bit)
     if (tim->mode & 0x8) {
@@ -64,6 +65,33 @@ void asmg_load_sprt(SPRT *sprite, TIM_IMAGE *tim, CdrData *cdr_data) {
              sprite->x0, sprite->y0, sprite->w, sprite->h, sprite->u0, sprite->v0
     );
 }
+
+//void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdrData *cdr_data) {
+//    asmg_load_tim_data(tim, cdr_data);
+//
+//    setPolyFT4(poly_ft4);
+//
+//    // Set sprite size
+//    short w = sprite->w = tim->prect->w << (2 - tim->mode & 0x3);
+//    short h = sprite->h = tim->prect->h;
+//    setWH(sprite, w, h);
+//
+//    // Get CLUT values (if sprite not 16 bit)
+//    if (tim->mode & 0x8) {
+//        sprite->clut = getClut(tim->crect->x, tim->crect->y);
+//    }
+//
+//    // Set UV offset
+//    u_short sprite_u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
+//    u_short sprite_v = (tim->prect->y & 0xff);
+//    setUV0(sprite, sprite_u, sprite_v);
+//    setRGB0(sprite, 128, 128, 128);
+//
+//    logr_log(INFO, "Main.c", "set_sprite",
+//             "Sprite initialized {x, y, w, h, u, v}=%d, %d, %d, %d, %d, %d",
+//             sprite->x0, sprite->y0, sprite->w, sprite->h, sprite->u0, sprite->v0
+//    );
+//}
 
 void asmg_audio_init() {
     SpuInit();

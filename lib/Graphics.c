@@ -4,8 +4,6 @@
 
 #include "Graphics.h"
 
-#define PRIM_BUFF_32K 32768
-
 DISPENV disp_env[2];
 DRAWENV draw_env[2];
 
@@ -45,7 +43,7 @@ void gfx_init() {
     current_buffer = 0;
 
     FntLoad(960, 0);
-    FntOpen(100, 1, 180, 20, 1, 256);
+    FntOpen(20, 10, GFX_SCREEN_W, 50, 0, 256);
 
     // Enable display
     SetDispMask(1);
@@ -76,6 +74,12 @@ void gfx_display() {
 void gfx_sort_sprt(SPRT *sprt) {
     addPrim(&ot[current_buffer], sprt);
 }
+
+void gfx_sort_sprt_with_tpage(SPRT *sprt, DR_TPAGE *dr_tpage) {
+    addPrim(&ot[current_buffer], sprt);
+    addPrim(&ot[current_buffer], dr_tpage);
+}
+
 void gfx_sort_tile(TILE *tile) {
     addPrim(&ot[current_buffer], tile);
 }

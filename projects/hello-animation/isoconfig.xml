@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<iso_project image_name="../../target/hello-animation.iso" no_xa="1">
+	<track type="data">
+		<license file="../../tools/LICENSEA.DAT"/>
+		<directory_tree>
+			<file name="SYSTEM.CNF"		type="data"	source="../../tools/SYSTEM.CNF"/>
+			<file name="MAIN.EXE"		type="data"	source="hello-animation.ps-exe"/>
+
+			<file name="CAPPY.TIM"		type="data"	source="../../assets/tim/capmv.tim"/>
+			<file name="PILLAR.TIM"		type="data"	source="../../assets/tim/pillar.tim"/>
+			<file name="SKYBOX.TIM"		type="data"	source="../../assets/tim/skybox.tim"/>
+			<file name="TREE.TIM"		type="data"	source="../../assets/tim/tree.tim"/>
+
+			<!-- Add your own files or folders here -->
+			<dummy sectors="1024"/>
+			
+		</directory_tree>
+	</track>
+</iso_project>

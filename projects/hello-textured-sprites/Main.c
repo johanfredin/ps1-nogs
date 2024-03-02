@@ -1,4 +1,3 @@
-#include "libgpu.h"
 #include "../../lib/CdReader.h"
 #include "../../lib/Logger.h"
 #include "../../lib/MemUtils.h"
