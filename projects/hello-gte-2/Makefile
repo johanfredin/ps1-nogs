@@ -1,7 +1,7 @@
 .PHONY: all cleansub
 all:
 	mkpsxiso -y isoconfig.xml
-	rm -f hello-rotating-polys hello-rotating-polys.bin
+	rm -f hello-gte-2 hello-gte-2.bin
 	rm -f *.map
 	rm -f *.elf
 	rm -f *.o rm -f *.dep
@@ -9,9 +9,9 @@ all:
 
 cleansub:
 	$(MAKE) clean
-	rm -f hello-rotating-polys.cue hello-rotating-polys.bin
+	rm -f hello-gte-2.cue hello-gte-2.bin
 
-TARGET = hello-rotating-polys
+TARGET = hello-gte-2
 SRCS = Main.c
 
 include ../../Makefile

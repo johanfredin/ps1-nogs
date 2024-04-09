@@ -4,9 +4,10 @@ THIS_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 SRCS += $(THIS_DIR)third_party/nugget/common/crt0/crt0.s \
 $(THIS_DIR)lib/AssetManager.c \
-$(THIS_DIR)lib/CdReader.c \
 $(THIS_DIR)lib/Controller.c \
+$(THIS_DIR)lib/CD.c \
 $(THIS_DIR)lib/JSONParser.c \
+$(THIS_DIR)lib/Heap.c \
 $(THIS_DIR)lib/Logger.c \
 $(THIS_DIR)lib/Tiled.c \
 $(THIS_DIR)lib/Graphics.c \

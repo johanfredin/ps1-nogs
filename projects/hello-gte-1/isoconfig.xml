@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<iso_project image_name="../../target/hello-rotating-polys.iso" no_xa="1">
+<iso_project image_name="../../target/hello-gte-1.iso" no_xa="1">
 	<track type="data">
 		<license file="../../tools/LICENSEA.DAT"/>
 		<directory_tree>
 			<file name="SYSTEM.CNF"		type="data"	source="../../tools/SYSTEM.CNF"/>
-			<file name="MAIN.EXE"		type="data"	source="hello-rotating-polys.ps-exe"/>
-			<file name="RAICHU.TIM"		type="data"	source="../../assets/tim/raichu.tim"/>
+			<file name="MAIN.EXE"		type="data"	source="hello-gte-1.ps-exe"/>
 
 			<!-- Add your own files or folders here -->
+
 			<dummy sectors="1024"/>
 			
 		</directory_tree>

@@ -1,4 +1,4 @@
-#include "../../lib/CdReader.h"
+#include "../../lib/CD.h"
 #include "../../lib/Logger.h"
 #include "../../lib/MemUtils.h"
 #include "../../lib/Graphics.h"
@@ -37,10 +37,10 @@ int main() {
     MEM_INIT_HEAP_3();
     CDR_INIT();
     // Acquire crash and cappy tims from cd
-    CdrData *data_cappy = cdr_read_file("CAPPY.TIM");
-    CdrData *data_skybox = cdr_read_file("SKYBOX.TIM");
-    CdrData *data_pillar = cdr_read_file("PILLAR.TIM");
-    CdrData *data_tree = cdr_read_file("TREE.TIM");
+    CdData *data_cappy = cdr_read_file("CAPPY.TIM");
+    CdData *data_skybox = cdr_read_file("SKYBOX.TIM");
+    CdData *data_pillar = cdr_read_file("PILLAR.TIM");
+    CdData *data_tree = cdr_read_file("TREE.TIM");
     CDR_CLOSE();
 
     // Acquire tim data
@@ -76,7 +76,7 @@ int main() {
         gfx_clear_ot();
         check_pad(p1);
 
-        FntPrint("\cappy u=%d,v=%d, t=%d", cappy_sprite.u0, cappy_sprite.v0, current_anim->acc_ticks);
+        FntPrint("\n cappy u=%d,v=%d, t=%d", cappy_sprite.u0, cappy_sprite.v0, current_anim->acc_ticks);
         setUV0(&cappy_sprite, ((current_anim->curr_col) * cappy_sprite.w), ((current_anim->curr_row) * cappy_sprite.h));
         gfx_sort_sprt_with_tpage(&cappy_sprite, &dr_tpage_cappy);
         gfx_sort_sprt_with_tpage(&pillar_sprite, &dr_tpage_pillar);
@@ -91,56 +91,13 @@ void check_pad(Controller *pad) {
     // Get the id
     char *current_button = "";
     if (CTRL_IS_CONNECTED(pad)) {
-
-
         if (CTRL_NO_INPUT(pad)) {
             current_anim = anim_tick(&anim_idle);
         }
-
-        if (CTRL_IS_BTN_UP(pad)) {
-            current_button = "UP";
-        }
-        if (CTRL_IS_BTN_DOWN(pad)) {
-            current_button = "DOWN";
-        }
-        if (CTRL_IS_BTN_LEFT(pad)) {
-            current_button = "LEFT";
-        }
         if (CTRL_IS_BTN_RIGHT(pad)) {
-            current_button = "RIGHT";
             current_anim = anim_tick(&anim_walk_right);
         }
-        if (CTRL_IS_BTN_CROSS(pad)) {
-            current_button = "X";
-        }
-        if (CTRL_IS_BTN_SQUARE(pad)) {
-            current_button = "[]";
-        }
-        if (CTRL_IS_BTN_CIRCLE(pad)) {
-            current_button = "()";
-        }
-        if (CTRL_IS_BTN_TRIANGLE(pad)) {
-            current_button = "/\\";
-        }
-        if (CTRL_IS_BTN_START(pad)) {
-            current_button = "START";
-        }
-        if (CTRL_IS_BTN_SELECT(pad)) {
-            current_button = "SELECT";
-        }
-        if (CTRL_IS_BTN_R1(pad)) {
-            current_button = "R1";
-        }
-        if (CTRL_IS_BTN_R2(pad)) {
-            current_button = "R2";
-        }
-        if (CTRL_IS_BTN_L1(pad)) {
-            current_button = "L1";
-        }
-        if (CTRL_IS_BTN_L2(pad)) {
-            current_button = "L2";
-        }
-        FntPrint("Controller connected\nButton pressed=%s", current_button);
+        FntPrint("Controller connected\n");
     }
 
 }

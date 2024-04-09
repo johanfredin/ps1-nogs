@@ -10,7 +10,7 @@ add_executable(
         ps1_dev
 
         lib/AssetManager.h
-        lib/CdReader.h
+        lib/CD.h
         lib/JSONParser.h
         lib/Logger.h
         lib/MemUtils.h
@@ -18,27 +18,31 @@ add_executable(
         lib/Tiled.h
         lib/SoundEffect.h
         lib/DPad.h
-        lib/AssetManager.c
-        lib/CdReader.c
+        lib/CD.c
         lib/JSONParser.c
         lib/Logger.c
         lib/Tiled.c
         lib/Controller.h
         lib/Controller.c
         lib/Graphics.c
-        lib/Graphics.h
         lib/Animation.c
         lib/Animation.h
+        lib/Heap.h
+        lib/Heap.c
 
         # NON LIBGS Projects
         projects/hello-debug-font/Main.c
         projects/hello-flat-shaded-polys/Main.c
         projects/hello-textured-sprites/Main.c
         projects/hello-controllers/Main.c
-        projects/hello-rotating-polys/Main.c
         projects/hello-animation/Main.c
         lib/GameObject.h
         lib/GameObject.c
+        projects/hello-gte-1/Main.c
+        projects/hello-gte-2/Main.c
+        lib/AssetManager.c
+        lib/Heap.c
+        lib/Heap.h
 
 
 )

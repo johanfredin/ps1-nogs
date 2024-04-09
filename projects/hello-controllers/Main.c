@@ -61,84 +61,6 @@ void display() {
     SetDispMask(1);
 }
 
-void check_pad(Controller *pad) {
-    // Get the id
-    char *current_button = "";
-    u_char is_connected = CTRL_IS_CONNECTED(pad);
-    if (is_connected) {
-        char *type = "";
-        switch (pad->type) {
-            case CTRL_TYPE_DIGITAL:
-                type = "Digital";
-                break;
-            case CTRL_TYPE_ANALOG:
-                type = "Analog";
-                FntPrint("Sticks stat L3 (x,y), R3=(x, y),(%d,%d), (%d, %d)\n", pad->ls_x, pad->ls_y, pad->rs_x,
-                         pad->rs_y);
-                break;
-            case CTRL_TYPE_DUAL_SHOCK:
-                type = "Dual Shock";
-                FntPrint("Sticks stat L3 (x,y), R3=(x, y),(%d,%d), (%d, %d)\n", pad->ls_x, pad->ls_y, pad->rs_x,
-                         pad->rs_y);
-                break;
-            default:
-                type = "UNKNOWN";
-        }
-        FntPrint("Controller type=%s\n", type);
-
-
-        if (CTRL_IS_BTN_UP(pad)) {
-            current_button = "UP";
-        }
-        if (CTRL_IS_BTN_DOWN(pad)) {
-            current_button = "DOWN";
-        }
-        if (CTRL_IS_BTN_LEFT(pad)) {
-            current_button = "LEFT";
-        }
-        if (CTRL_IS_BTN_RIGHT(pad)) {
-            current_button = "RIGHT";
-        }
-        if (CTRL_IS_BTN_CROSS(pad)) {
-            current_button = "X";
-        }
-        if (CTRL_IS_BTN_SQUARE(pad)) {
-            current_button = "[]";
-        }
-        if (CTRL_IS_BTN_CIRCLE(pad)) {
-            current_button = "()";
-        }
-        if (CTRL_IS_BTN_TRIANGLE(pad)) {
-            current_button = "/\\";
-        }
-        if (CTRL_IS_BTN_START(pad)) {
-            current_button = "START";
-        }
-        if (CTRL_IS_BTN_SELECT(pad)) {
-            current_button = "SELECT";
-        }
-        if (CTRL_IS_BTN_R1(pad)) {
-            current_button = "R1";
-        }
-        if (CTRL_IS_BTN_R2(pad)) {
-            current_button = "R2";
-        }
-        if (CTRL_IS_BTN_L1(pad)) {
-            current_button = "L1";
-        }
-        if (CTRL_IS_BTN_L2(pad)) {
-            current_button = "L2";
-        }
-        if (CTRL_IS_BTN_R3(pad)) {
-            current_button = "R3";
-        }
-        if (CTRL_IS_BTN_L3(pad)) {
-            current_button = "L3";
-        }
-    }
-    FntPrint("Connected=%d\nButton pressed=%s", is_connected, current_button);
-}
-
 int main() {
     init();
     ctrl_init();
@@ -148,7 +70,7 @@ int main() {
 
     while (1) {
         FntPrint("Hello Controllers!\n");
-        check_pad(p1);
+        CTRL_LOG_INPUT(p1);
         FntFlush(-1);
         display();
     }

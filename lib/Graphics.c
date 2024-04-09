@@ -29,8 +29,7 @@ void gfx_init() {
     SetDefDrawEnv(&draw_env[1], 0, 0, GFX_SCREEN_W, GFX_SCREEN_H);
 
     // Specifies the clear color of the DRAWENV
-    setRGB0(&draw_env[0], 0, 0, 0);
-    setRGB0(&draw_env[1], 0, 0, 0);
+    gfx_set_bg_color(0, 0, 0);
 
     // Enable background clear
     draw_env[0].isbg = 1;
@@ -47,6 +46,11 @@ void gfx_init() {
 
     // Enable display
     SetDispMask(1);
+}
+
+void gfx_set_bg_color(uint8_t r, uint8_t g, uint8_t b) {
+    setRGB0(&draw_env[0], r, g, b);
+    setRGB0(&draw_env[1], r, g, b);
 }
 
 void gfx_clear_ot() {
@@ -71,6 +75,17 @@ void gfx_display() {
     current_buffer = !current_buffer;
 }
 
+void gfx_init_poly_f3(POLY_F3 *poly, SVECTOR *v, uint8_t r, uint8_t g, uint8_t b) {
+    setPolyF3(poly);
+    setRGB0(poly, r, g, b);
+    setXY3(
+            poly,
+            v[0].vx, v[0].vy,
+            v[1].vx, v[1].vy,
+            v[2].vx, v[2].vy
+    );
+}
+
 void gfx_sort_sprt(SPRT *sprt) {
     addPrim(&ot[current_buffer], sprt);
 }
@@ -82,6 +97,32 @@ void gfx_sort_sprt_with_tpage(SPRT *sprt, DR_TPAGE *dr_tpage) {
 
 void gfx_sort_tile(TILE *tile) {
     addPrim(&ot[current_buffer], tile);
+}
+
+void gfx_sort_poly_f3(POLY_F3 *poly) {
+    addPrim(&ot[current_buffer], poly);
+}
+
+void gfx_sort_poly_ft4(POLY_FT4 *poly, DVECTOR *v) {
+    setXY4(
+            poly,
+            v[0].vx, v[0].vy,
+            v[1].vx, v[1].vy,
+            v[2].vx, v[2].vy,
+            v[3].vx, v[3].vy
+    );
+    addPrim(&ot[current_buffer], poly);
+}
+
+void gfx_sort_poly_f4(POLY_F4 *poly, DVECTOR *v) {
+    setXY4(
+            poly,
+            v[0].vx, v[0].vy,
+            v[1].vx, v[1].vy,
+            v[2].vx, v[2].vy,
+            v[3].vx, v[3].vy
+    );
+    addPrim(&ot[current_buffer], poly);
 }
 
 void gfx_sort_dr_tpage(DR_TPAGE *dr_tpage) {

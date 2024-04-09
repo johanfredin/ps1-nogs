@@ -2,11 +2,12 @@
 
 #include "CdReader.h"
 #include "Logger.h"
-#include "MemUtils.h"
 #include "StrUtils.h"
+#include "stdlib.h"
+#include <malloc.h>
 
 CdrData *cdr_create_data_entry(char *name) {
-    CdrData *asset = MEM_MALLOC_3(CdrData);
+    CdrData *asset = malloc3(sizeof (CdrData));
     asset->name = name;
     asset->file = NULL;
     asset->sectors = 0;
@@ -59,7 +60,7 @@ void cdr_read_from_disc(CdrData *cdr_data) {
         const u_long sectors_needed = (sectors_size + CDR_SECTOR - 1) / CDR_SECTOR;
         logr_log(TRACE, "CdReader.c", "cdr_read_file", "file buffer size needed: %d", sectors_size);
         logr_log(TRACE, "CdReader.c", "cdr_read_file", "sectors needed: %d", sectors_needed);
-        cdr_data->file = MEM_MALLOC_3_CUS_SIZE(u_long, sectors_size + CDR_SECTOR);
+        cdr_data->file = malloc3(sectors_size + CDR_SECTOR);
         DsRead(&temp_file_info.pos, (int) sectors_needed, cdr_data->file, DslModeSpeed);
 
         while (DsReadSync(NULL)) {

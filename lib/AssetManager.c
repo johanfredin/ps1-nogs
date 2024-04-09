@@ -17,7 +17,7 @@ SpuVoiceAttr spu_voice_attr;
 long vag_spu_addr;
 char rec[SPU_MALLOC_RECSIZ * (ASMG_SOUND_MALLOC_MAX + 1)];
 
-void asmg_load_tim_data(TIM_IMAGE *tim_data, CdrData *cdr_data) {
+void asmg_load_tim_data(TIM_IMAGE *tim_data, CdData *cdr_data) {
     // Read TIM information
     OpenTIM(cdr_data->file);
     ReadTIM(tim_data);
@@ -38,60 +38,62 @@ void asmg_load_tim_data(TIM_IMAGE *tim_data, CdrData *cdr_data) {
     }
 }
 
-void asmg_load_sprt(SPRT *sprite, TIM_IMAGE *tim, CdrData *cdr_data) {
+void asmg_load_sprt(SPRT *sprt, TIM_IMAGE *tim, CdData *cdr_data) {
     asmg_load_tim_data(tim, cdr_data);
 
-    setSprt(sprite);
+    setSprt(sprt);
 
-    // Set sprite size
-    short w = sprite->w = tim->prect->w << (2 - tim->mode & 0x3);
-    short h = sprite->h = tim->prect->h;
-    setWH(sprite, w, h);
-    setXY0(sprite, 0, 0);
+    // Set poly_ft4 size
+    short w = sprt->w = tim->prect->w << (2 - tim->mode & 0x3);
+    short h = sprt->h = tim->prect->h;
+    setWH(sprt, w, h);
+    setXY0(sprt, 0, 0);
 
-    // Get CLUT values (if sprite not 16 bit)
+    // Get CLUT values (if poly_ft4 not 16 bit)
     if (tim->mode & 0x8) {
-        sprite->clut = getClut(tim->crect->x, tim->crect->y);
+        sprt->clut = getClut(tim->crect->x, tim->crect->y);
     }
 
     // Set UV offset
-    u_short sprite_u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
-    u_short sprite_v = (tim->prect->y & 0xff);
-    setUV0(sprite, sprite_u, sprite_v);
-    setRGB0(sprite, 128, 128, 128);
+    u_short poly_ft4_u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
+    u_short poly_ft4_v = (tim->prect->y & 0xff);
+    setUV0(sprt, poly_ft4_u, poly_ft4_v);
+    setRGB0(sprt, 128, 128, 128);
 
-    logr_log(INFO, "Main.c", "set_sprite",
-             "Sprite initialized {x, y, w, h, u, v}=%d, %d, %d, %d, %d, %d",
-             sprite->x0, sprite->y0, sprite->w, sprite->h, sprite->u0, sprite->v0
+    logr_log(INFO, "Main.c", "set_poly_ft4",
+             "poly_ft4 initialized {x, y, w, h, u, v}=%d, %d, %d, %d, %d, %d",
+             sprt->x0, sprt->y0, sprt->w, sprt->h, sprt->u0, sprt->v0
     );
 }
 
-//void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdrData *cdr_data) {
-//    asmg_load_tim_data(tim, cdr_data);
-//
-//    setPolyFT4(poly_ft4);
-//
-//    // Set sprite size
-//    short w = sprite->w = tim->prect->w << (2 - tim->mode & 0x3);
-//    short h = sprite->h = tim->prect->h;
-//    setWH(sprite, w, h);
-//
-//    // Get CLUT values (if sprite not 16 bit)
-//    if (tim->mode & 0x8) {
-//        sprite->clut = getClut(tim->crect->x, tim->crect->y);
-//    }
-//
-//    // Set UV offset
-//    u_short sprite_u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
-//    u_short sprite_v = (tim->prect->y & 0xff);
-//    setUV0(sprite, sprite_u, sprite_v);
-//    setRGB0(sprite, 128, 128, 128);
-//
-//    logr_log(INFO, "Main.c", "set_sprite",
-//             "Sprite initialized {x, y, w, h, u, v}=%d, %d, %d, %d, %d, %d",
-//             sprite->x0, sprite->y0, sprite->w, sprite->h, sprite->u0, sprite->v0
-//    );
-//}
+void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdData *cdr_data) {
+    asmg_load_tim_data(tim, cdr_data);
+
+    setPolyFT4(poly_ft4);
+
+    uint8_t x = tim->prect->x;
+    uint8_t y = tim->prect->y;
+    uint8_t w = tim->prect->w << (2 - tim->mode & 0x3);
+    uint8_t h = tim->prect->h;
+
+    poly_ft4->tpage = getTPage(tim->mode & 0x3, 0, tim->prect->x, tim->prect->y);
+
+    // Get CLUT values (if poly_ft4 not 16 bit)
+    if (tim->mode & 0x8) {
+        poly_ft4->clut = getClut(tim->crect->x, tim->crect->y);
+    }
+
+    // Set UV offset
+    u_short u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
+    u_short v = (tim->prect->y & 0xff);
+    setUVWH(poly_ft4, u, v, tim->prect->w, tim->prect->h);
+    setRGB0(poly_ft4, 128, 128, 128);
+
+    logr_log(INFO, "Main.c", "set_poly_ft4",
+             "PolyFT4 initialized {x, y, w, h, u, v}=%d, %d, %d, %d, %d, %d",
+             poly_ft4->x0, poly_ft4->y0, poly_ft4->x2, poly_ft4->y3, poly_ft4->u0, poly_ft4->v0
+    );
+}
 
 void asmg_audio_init() {
     SpuInit();
@@ -105,9 +107,9 @@ void asmg_audio_init() {
     logr_log(INFO, "AssetManager.c", "asmg_audio_init", "SPU initialized");
 }
 
-void asmg_transfer_vag_to_spu(CdrData *cdr_data, u_long voice_channel) {
+void asmg_transfer_vag_to_spu(CdData *cdr_data, u_long voice_channel) {
     SpuSetTransferMode(SpuTransByDMA);                                   // set transfer mode to DMA
-    vag_spu_addr = SpuMalloc((long)(cdr_data->sectors) * CDR_SECTOR);     // allocate SPU memory for sound
+    vag_spu_addr = SpuMalloc((long)(cdr_data->sectors) * CD_SECTOR);     // allocate SPU memory for sound
     if(vag_spu_addr == -1) {
         logr_log(ERROR, "AssetManager.c", "asmg_transfer_vag_to_spu", "Could not allocate audio file %s, shutting down", cdr_data->name);
         exit(1);
@@ -116,7 +118,7 @@ void asmg_transfer_vag_to_spu(CdrData *cdr_data, u_long voice_channel) {
     SpuSetTransferStartAddr(vag_spu_addr);                           // set transfer starting address to malloced area
     u_char *vag_file = (u_char *) cdr_data->file;
     ASMG_AUDIO_SKIP_VAG_HEADER(vag_file);
-    SpuWrite(vag_file, cdr_data->sectors * CDR_SECTOR);         // perform actual transfer
+    SpuWrite(vag_file, cdr_data->sectors * CD_SECTOR);         // perform actual transfer
     SpuIsTransferCompleted(SPU_TRANSFER_WAIT);                       // wait for dma to complete
     spu_voice_attr.mask = (
             SPU_VOICE_VOLL |

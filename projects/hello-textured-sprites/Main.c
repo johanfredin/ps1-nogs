@@ -1,4 +1,4 @@
-#include "../../lib/CdReader.h"
+#include "../../lib/CD.h"
 #include "../../lib/Logger.h"
 #include "../../lib/MemUtils.h"
 #include "../../lib/Graphics.h"
@@ -23,10 +23,10 @@ int main() {
     MEM_INIT_HEAP_3();
     CDR_INIT();
     // Acquire crash and cappy tims from cd
-    CdrData *data_crash = cdr_read_file("CRASH.TIM");
-    CdrData *data_cappy = cdr_read_file("CAPPY.TIM");
-    CdrData *data_raichu = cdr_read_file("RAICHU.TIM");
-    CdrData *data_psyduck = cdr_read_file("PSYDUCK.TIM");
+    CdData *data_crash = cdr_read_file("CRASH.TIM");
+    CdData *data_cappy = cdr_read_file("CAPPY.TIM");
+    CdData *data_raichu = cdr_read_file("RAICHU.TIM");
+    CdData *data_psyduck = cdr_read_file("PSYDUCK.TIM");
     CDR_CLOSE();
 
     // Acquire tim data

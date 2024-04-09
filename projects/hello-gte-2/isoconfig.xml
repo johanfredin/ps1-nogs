@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<iso_project image_name="../../target/hello-gte-2.iso" no_xa="1">
+	<track type="data">
+		<license file="../../tools/LICENSEA.DAT"/>
+		<directory_tree>
+			<file name="SYSTEM.CNF"		type="data"	source="../../tools/SYSTEM.CNF"/>
+			<file name="MAIN.EXE"		type="data"	source="hello-gte-2.ps-exe"/>
+
+			<!-- Add your own files or folders here -->
+			<file name="SHIP.TIM"		type="data"	source="../../assets/tim/ship.tim"/>
+
+			<dummy sectors="1024"/>
+			
+		</directory_tree>
+	</track>
+</iso_project>

@@ -5,7 +5,7 @@
 #include "libgte.h"
 #include "libgpu.h"
 
-#include "CdReader.h"
+#include "CD.h"
 #include "Tiled.h"
 
 #define ASMG_SOUND_MALLOC_MAX 0xA
@@ -24,9 +24,10 @@
  */
 #define ASMG_AUDIO_SKIP_VAG_HEADER(vag) ((vag) += ASMG_VAG_HEADER_BYTE_SIZE)
 
-void asmg_load_tim_data(TIM_IMAGE *tim_data, CdrData *cdr_data);
-void asmg_load_sprt(SPRT *sprite, TIM_IMAGE *tim, CdrData *data);
+void asmg_load_tim_data(TIM_IMAGE *tim_data, CdData *cdr_data);
+void asmg_load_sprt(SPRT *sprt, TIM_IMAGE *tim, CdData *data);
+void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdData *cdr_data);
 void asmg_audio_init();
-void asmg_transfer_vag_to_spu(CdrData *cdr_data, u_long voice_channel);
+void asmg_transfer_vag_to_spu(CdData *cdr_data, u_long voice_channel);
 
 #endif // PSX_ASSET_MANAGER_H

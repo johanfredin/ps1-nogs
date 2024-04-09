@@ -287,6 +287,18 @@ extern "C" {
 #endif
 
 void CdFlush(void);
+
+/**
+ * Determines the position time code (minutes, seconds, sectors) and total length of the specified file on the
+ * CD-ROM. The result is stored in the CdlFILE structure pointed to by fp.
+ * name must be a complete path to the file.
+ * CdSearchFile() caches directory information, so subsequent consecutive calls for files in the same directory
+ * do not require additional CD-ROM reads. Only one directory is cached at a time, and reading information
+ * for a file in another directory invalidates the entire cache.
+ * For the best possible performance, include file location and size information in your program at compile
+ * time instead of using CdSearchFile().
+ *
+ */
 CdlFILE *CdSearchFile(CdlFILE *fp, char *name);
 /**
  * Translate an absolute sector number to a minute/seconds/sector time code.
