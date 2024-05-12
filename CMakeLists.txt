@@ -43,6 +43,7 @@ add_executable(
         lib/AssetManager.c
         lib/Heap.c
         lib/Heap.h
+        projects/hello-fixed-point/Main.c
 
 
 )

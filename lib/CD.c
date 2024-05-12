@@ -22,10 +22,6 @@ void cd_init() {
     exit(1);
 }
 
-void cd_data_free(CdData *p) {
-    free(p);
-}
-
 void cd_data_init(CdData *p, char *name) {
     p->name = name;
     p->file = NULL;

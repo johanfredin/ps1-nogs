@@ -21,7 +21,6 @@ typedef struct CdDATrack {
 
 void cd_init();
 void cd_data_init(CdData *p, char *name);
-void cd_data_free(CdData *p);
 
 CdData *cd_find(char *name, CdData **assets, uint8_t assets_cnt);
 
