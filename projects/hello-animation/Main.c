@@ -1,6 +1,5 @@
 #include "../../lib/CD.h"
-#include "../../lib/Logger.h"
-#include "../../lib/MemUtils.h"
+#include "../../lib/Heap.h"
 #include "../../lib/Graphics.h"
 #include "../../lib/AssetManager.h"
 #include "../../lib/Controller.h"
@@ -26,7 +25,6 @@ int main() {
     TIM_IMAGE tim_pillar;
     TIM_IMAGE tim_tree;
 
-
     // Initialize system
     gfx_init();
 
@@ -34,14 +32,13 @@ int main() {
 
     Controller *p1 = ctrl_read(CTRL_PAD_1);
 
-    MEM_INIT_HEAP_3();
-    CDR_INIT();
+    heap_init();
+    cd_init();
     // Acquire crash and cappy tims from cd
-    CdData *data_cappy = cdr_read_file("CAPPY.TIM");
-    CdData *data_skybox = cdr_read_file("SKYBOX.TIM");
-    CdData *data_pillar = cdr_read_file("PILLAR.TIM");
-    CdData *data_tree = cdr_read_file("TREE.TIM");
-    CDR_CLOSE();
+    CdData *data_cappy = cd_data_malloc("CAPPY.TIM");
+    CdData *data_skybox = cd_data_malloc("SKYBOX.TIM");
+    CdData *data_pillar = cd_data_malloc("PILLAR.TIM");
+    CdData *data_tree = cd_data_malloc("TREE.TIM");
 
     // Acquire tim data
     asmg_load_sprt(&cappy_sprite, &tim_cappy, data_cappy);
@@ -55,10 +52,10 @@ int main() {
     GFX_DR_TPAGE_INIT(&dr_tpage_pillar, &tim_pillar);
     GFX_DR_TPAGE_INIT(&dr_tpage_tree, &tim_tree);
 
-    CDR_DATA_FREE(data_cappy);
-    CDR_DATA_FREE(data_pillar);
-    CDR_DATA_FREE(data_skybox);
-    CDR_DATA_FREE(data_tree);
+    cd_data_free(data_cappy);
+    cd_data_free(data_pillar);
+    cd_data_free(data_skybox);
+    cd_data_free(data_tree);
 
     setXY0(&cappy_sprite, 100, 128);
     setWH(&cappy_sprite, 64, 64);
@@ -97,7 +94,6 @@ void check_pad(Controller *pad) {
         if (CTRL_IS_BTN_RIGHT(pad)) {
             current_anim = anim_tick(&anim_walk_right);
         }
-        FntPrint("Controller connected\n");
     }
 
 }

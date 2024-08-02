@@ -1,9 +1,8 @@
-#include "stdlib.h"
-#include "libspu.h"
+#include <stdlib.h>
+#include <libspu.h>
 
 #include "AssetManager.h"
 #include "Logger.h"
-#include "Graphics.h"
 
 /*
  * Get the vram tim_data size using bitplane info (because vram position is in 16bits mode only)
@@ -71,10 +70,10 @@ void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdData *cdr_data) {
 
     setPolyFT4(poly_ft4);
 
-    uint8_t x = tim->prect->x;
-    uint8_t y = tim->prect->y;
-    uint8_t w = tim->prect->w << (2 - tim->mode & 0x3);
-    uint8_t h = tim->prect->h;
+    u_char x = tim->prect->x;
+    u_char y = tim->prect->y;
+    u_char w = tim->prect->w << (2 - tim->mode & 0x3);
+    u_char h = tim->prect->h;
 
     poly_ft4->tpage = getTPage(tim->mode & 0x3, 0, tim->prect->x, tim->prect->y);
 

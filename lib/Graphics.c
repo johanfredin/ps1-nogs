@@ -3,6 +3,7 @@
 //
 
 #include "Graphics.h"
+#include <libetc.h>
 
 DISPENV disp_env[2];
 DRAWENV draw_env[2];
@@ -18,7 +19,7 @@ void gfx_init() {
     ResetGraph(0);
 
     // Set the video mode (default is NTSC so not required here)
-    SetVideoMode(MODE_NTSC);
+    SetVideoMode(0);
 
     // Configure the DISPENVs for NTSC mode
     SetDefDispEnv(&disp_env[0], 0, 0, GFX_SCREEN_W, GFX_SCREEN_H);
@@ -48,7 +49,7 @@ void gfx_init() {
     SetDispMask(1);
 }
 
-void gfx_set_bg_color(uint8_t r, uint8_t g, uint8_t b) {
+void gfx_set_bg_color(u_char r, u_char g, u_char b) {
     setRGB0(&draw_env[0], r, g, b);
     setRGB0(&draw_env[1], r, g, b);
 }
@@ -75,7 +76,7 @@ void gfx_display() {
     current_buffer = !current_buffer;
 }
 
-void gfx_init_poly_f3(POLY_F3 *poly, SVECTOR *v, uint8_t r, uint8_t g, uint8_t b) {
+void gfx_init_poly_f3(POLY_F3 *poly, SVECTOR *v, u_char r, u_char g, u_char b) {
     setPolyF3(poly);
     setRGB0(poly, r, g, b);
     setXY3(

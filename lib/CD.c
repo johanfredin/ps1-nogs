@@ -4,6 +4,7 @@
 #include <malloc.h>
 
 #include "CD.h"
+#include "Heap.h"
 #include "Logger.h"
 #include "StrUtils.h"
 #include "stdlib.h"
@@ -12,6 +13,7 @@
 #define DA_MODE_REPEAT 2
 #define DA_STOP 0
 #define DA_ENABLED 1
+
 
 void cd_init() {
     if (CdInit()) {
@@ -23,7 +25,17 @@ void cd_init() {
 }
 
 void cd_data_free(CdData *p) {
-    free(p);
+    heap_free(p->file);
+    heap_free(p);
+}
+
+CdData *cd_data_malloc(char *name) {
+    CdData *cd_data = heap_malloc(sizeof(CdData));
+    cd_data->name = name;
+    cd_data->file = NULL;
+    cd_data->sectors = 0;
+    cd_acquire_data(cd_data);
+    return cd_data;
 }
 
 void cd_data_init(CdData *p, char *name) {
@@ -32,8 +44,8 @@ void cd_data_init(CdData *p, char *name) {
     p->sectors = 0;
 }
 
-CdData *cd_find(char *name, CdData **assets, u_char assets_cnt) {
-    for (u_char i = 0; i < assets_cnt; i++) {
+CdData *cd_find(char *name, CdData **assets, unsigned char assets_cnt) {
+    for (int i = 0; i < assets_cnt; i++) {
         if (STR_EQ(assets[i]->name, name)) {
             logr_log(TRACE, "CD.c", "cd_find", "Name=%s, found at index=%d", assets[i]->name, i);
             return assets[i];
@@ -61,11 +73,11 @@ void cd_acquire_data(CdData *cdr_data) {
 
     logr_log(TRACE, "CD.c", "cd_acquire_data", "file found");
     logr_log(TRACE, "CD.c", "cd_acquire_data", "file size: %d", file_pos.size);
-    const int num_secs = (file_pos.size + (CD_SECTOR - 1)) / CD_SECTOR;
+    const int num_secs = (int)(file_pos.size + (CD_SECTOR - 1)) / CD_SECTOR;
     logr_log(TRACE, "CD.c", "cd_acquire_data", "seconds in: %d", num_secs);
     CdControl(CdlSetloc, (u_char *) &file_pos.pos, 0);
-    u_long buff[SECTOR_SIZE * num_secs];
-    CdRead(num_secs, buff, CdlSetloc);
+    unsigned long *buff = heap_malloc(CD_SECTOR * num_secs);
+    CdRead(num_secs, buff, CdlModeSpeed);
     CdReadSync(0, 0);
 
     cdr_data->file = buff;
@@ -78,7 +90,7 @@ void cdr_da_play(CdDATrack *track) {
     /*
      * Do not attempt to play a track that is already playing or is not a valid DA track no (0-1 = DATA)
      */
-    uint8_t cant_play = ((track == NULL) | track->is_playing | track->track < VALID_DA_START_TRACK);
+    u_char cant_play = ((track == NULL) | track->is_playing | track->track < VALID_DA_START_TRACK);
     if (cant_play) {
         return;
     }
@@ -94,7 +106,7 @@ void cdr_da_stop(CdDATrack *track) {
     /*
      * Do not attempt to stop a track that is not playing or is not a valid DA track no (0-1 = DATA)
      */
-    uint8_t cant_stop = (track == NULL) | !track->is_playing | track->track < VALID_DA_START_TRACK;
+    u_char cant_stop = (track == NULL) | !track->is_playing | track->track < VALID_DA_START_TRACK;
     if (cant_stop) {
         return;
     }

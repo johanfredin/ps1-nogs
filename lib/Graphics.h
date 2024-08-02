@@ -5,9 +5,8 @@
 #ifndef PS1_DEV_GRAPHICS_H
 #define PS1_DEV_GRAPHICS_H
 
-#include <stdint-gcc.h>
 #include "libgpu.h"
-#include "libetc.h"
+#include "sys/types.h"
 
 #define GFX_SCREEN_W 320
 #define GFX_SCREEN_H 240
@@ -19,12 +18,12 @@
     setDrawTPage((dr_tpage), 0, 1,  getTPage((tim_image)->mode & 0x3, 0, (tim_image)->prect->x, (tim_image)->prect->y))
 
 void gfx_init();
-void gfx_set_bg_color(uint8_t r, uint8_t g, uint8_t b);
+void gfx_set_bg_color(u_char r, u_char g, u_char b);
 void gfx_clear_ot();
 void gfx_display();
 
 void gfx_sort_sprt(SPRT *sprt);
-void gfx_init_poly_f3(POLY_F3 *poly, SVECTOR *v, uint8_t r, uint8_t g, uint8_t b);
+void gfx_init_poly_f3(POLY_F3 *poly, SVECTOR *v, u_char r, u_char g, u_char b);
 void gfx_sort_sprt_with_tpage(SPRT *sprt, DR_TPAGE *dr_tpage);
 void gfx_sort_tile(TILE *tile);
 void gfx_sort_poly_f3(POLY_F3 *poly);

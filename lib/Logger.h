@@ -8,7 +8,7 @@
 #define DEBUG 4
 #define TRACE 5
 
-#define LOG_LEVEL TRACE
+#define LOG_LEVEL DEBUG
 #define ENABLED (LOG_LEVEL > OFF)
 
 /**

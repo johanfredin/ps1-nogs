@@ -2,11 +2,9 @@
 #define PSX_ASSET_MANAGER_H
 
 #include "sys/types.h"
-#include "libgte.h"
 #include "libgpu.h"
 
 #include "CD.h"
-#include "Tiled.h"
 
 #define ASMG_SOUND_MALLOC_MAX 0xA
 #define ASMG_VAG_HEADER_BYTE_SIZE 0x30

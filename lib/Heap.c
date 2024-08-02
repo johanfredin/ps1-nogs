@@ -13,16 +13,28 @@ void heap_init() {
 }
 
 void *heap_malloc(size_t n) {
-    return malloc3(n);
+    void *p = malloc3(n);
+    if (p == NULL) {
+        logr_log(ERROR, "Heap.c", "heap_malloc", "Null ptr returned from malloc, terminating...");
+        exit(1);
+    }
+    return p;
 }
 
 void *heap_calloc(size_t n, size_t s) {
-    return calloc3(n, s);
+    void *p = calloc3(n, s);
+    if (p == NULL) {
+        logr_log(ERROR, "Heap.c", "heap_calloc", "Null ptr returned from calloc, terminating...");
+        exit(1);
+    }
+    return p;
 }
 
 void heap_free(void *ptr) {
-    if (ptr != NULL) {
-        free3(ptr);
-        ptr = NULL;
+    if (ptr == NULL) {
+        logr_log(ERROR, "Heap.c", "heap_free", "Attempted to free a NULL ptr, terminating...");
+        exit(1);
     }
+    free3(ptr);
+    ptr = NULL;
 }
