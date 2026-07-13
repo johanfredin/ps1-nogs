@@ -1,78 +1,21 @@
 #include <libgpu.h>
-#include <libetc.h>
 
 #include "../../lib/Controller.h"
-
-#define SCREEN_W 320
-#define SCREEN_H 240
-#define NUM_BUFFERS 2
-
-DISPENV disp_env[NUM_BUFFERS];
-DRAWENV draw_env[NUM_BUFFERS];
-
-u_char current_buffer;
-
-void init() {
-    // Reset gpu and enable interrupts
-    ResetGraph(0);
-
-    // Set the video mode (default is NTSC so not required here)
-    SetVideoMode(MODE_NTSC);
-
-    // Configure the DISPENVs for NTSC mode
-    SetDefDispEnv(&disp_env[0], 0, 0, SCREEN_W, SCREEN_H);
-    SetDefDispEnv(&disp_env[1], 0, SCREEN_H, SCREEN_W, SCREEN_H);
-
-    // Configure the pair of DRAWENVs for the DISPENVs
-    SetDefDrawEnv(&draw_env[0], 0, SCREEN_H, SCREEN_W, SCREEN_H);
-    SetDefDrawEnv(&draw_env[1], 0, 0, SCREEN_W, SCREEN_H);
-
-    // Specifies the clear color of the DRAWENV
-    setRGB0(&draw_env[0], 63, 0, 127);
-    setRGB0(&draw_env[1], 63, 0, 127);
-
-    // Enable background clear
-    draw_env[0].isbg = 1;
-    draw_env[1].isbg = 1;
-
-    // Apply environments
-    PutDispEnv(&disp_env[0]);
-    PutDrawEnv(&draw_env[0]);
-
-    current_buffer = 0;
-
-    FntLoad(960, 0);
-    FntOpen(20, 20, SCREEN_W, 50, 0, 256);
-}
-
-void display() {
-    // Wait for GPU to finish drawing and V-Blank
-    DrawSync(0);
-    VSync(0);
-
-    // Flip current buffer
-    current_buffer = !current_buffer;
-
-    // Apply environments
-    PutDispEnv(&disp_env[current_buffer]);
-    PutDrawEnv(&draw_env[current_buffer]);
-
-    // Enable display
-    SetDispMask(1);
-}
+#include "../../lib/Graphics.h"
 
 int main() {
-    init();
+    gfx_init();
+    gfx_set_bg_color(0x10, 0x25, 0x55);
     ctrl_init();
 
-    Controller *p1 = ctrl_read(CTRL_PAD_1);
-    Controller *p2 = ctrl_read(CTRL_PAD_2);
+    const Controller *p1 = ctrl_read(CTRL_PAD_1);
 
     while (1) {
+        gfx_clear_ot();
         FntPrint("Hello Controllers!\n");
         CTRL_LOG_INPUT(p1);
         FntFlush(-1);
-        display();
+        gfx_display();
     }
 }
 

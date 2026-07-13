@@ -5,6 +5,8 @@
 #ifndef PS1_DEV_GRAPHICS_H
 #define PS1_DEV_GRAPHICS_H
 
+#include <stdint.h>
+
 #include "libgpu.h"
 #include "sys/types.h"
 
@@ -30,6 +32,7 @@ void gfx_sort_poly_f3(POLY_F3 *poly);
 void gfx_sort_poly_f4(POLY_F4 *poly, DVECTOR *v);
 void gfx_sort_poly_ft4(POLY_FT4 *poly, DVECTOR *v);
 void gfx_sort_dr_tpage(DR_TPAGE *dr_tpage);
+uint8_t gfx_current_frame();
 
 
 #endif //PS1_DEV_GRAPHICS_H

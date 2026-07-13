@@ -4,6 +4,7 @@
 
 #include "Graphics.h"
 #include <libetc.h>
+#include <stdint.h>
 
 DISPENV disp_env[2];
 DRAWENV draw_env[2];
@@ -12,7 +13,7 @@ DRAWENV draw_env[2];
 u_long ot[2][GFX_OT_LEN];
 
 // Current buffer
-u_short current_buffer;
+uint8_t current_buffer;
 
 void gfx_init() {
     // Reset gpu and enable interrupts
@@ -52,6 +53,10 @@ void gfx_init() {
 void gfx_set_bg_color(u_char r, u_char g, u_char b) {
     setRGB0(&draw_env[0], r, g, b);
     setRGB0(&draw_env[1], r, g, b);
+}
+
+uint8_t gfx_current_frame() {
+    return current_buffer;
 }
 
 void gfx_clear_ot() {

@@ -1,8 +1,6 @@
 #include <libgpu.h>
 #include <libgte.h>
-#include "../../lib/CD.h"
-#include "../../lib/Logger.h"
-#include "../../lib/MemUtils.h"
+#include <stdint.h>
 #include "../../lib/Graphics.h"
 #include "../../lib/Controller.h"
 

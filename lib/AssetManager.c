@@ -69,12 +69,6 @@ void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdData *cdr_data) {
     asmg_load_tim_data(tim, cdr_data);
 
     setPolyFT4(poly_ft4);
-
-    u_char x = tim->prect->x;
-    u_char y = tim->prect->y;
-    u_char w = tim->prect->w << (2 - tim->mode & 0x3);
-    u_char h = tim->prect->h;
-
     poly_ft4->tpage = getTPage(tim->mode & 0x3, 0, tim->prect->x, tim->prect->y);
 
     // Get CLUT values (if poly_ft4 not 16 bit)
@@ -119,20 +113,18 @@ void asmg_transfer_vag_to_spu(CdData *cdr_data, u_long voice_channel) {
     ASMG_AUDIO_SKIP_VAG_HEADER(vag_file);
     SpuWrite(vag_file, cdr_data->sectors * CD_SECTOR);         // perform actual transfer
     SpuIsTransferCompleted(SPU_TRANSFER_WAIT);                       // wait for dma to complete
-    spu_voice_attr.mask = (
-            SPU_VOICE_VOLL |
-            SPU_VOICE_VOLR |
-            SPU_VOICE_PITCH |
-            SPU_VOICE_WDSA |
-            SPU_VOICE_ADSR_AMODE |
-            SPU_VOICE_ADSR_SMODE |
-            SPU_VOICE_ADSR_RMODE |
-            SPU_VOICE_ADSR_AR |
-            SPU_VOICE_ADSR_DR |
-            SPU_VOICE_ADSR_SR |
-            SPU_VOICE_ADSR_RR |
-            SPU_VOICE_ADSR_SL
-    );
+    spu_voice_attr.mask = SPU_VOICE_VOLL |
+                          SPU_VOICE_VOLR |
+                          SPU_VOICE_PITCH |
+                          SPU_VOICE_WDSA |
+                          SPU_VOICE_ADSR_AMODE |
+                          SPU_VOICE_ADSR_SMODE |
+                          SPU_VOICE_ADSR_RMODE |
+                          SPU_VOICE_ADSR_AR |
+                          SPU_VOICE_ADSR_DR |
+                          SPU_VOICE_ADSR_SR |
+                          SPU_VOICE_ADSR_RR |
+                          SPU_VOICE_ADSR_SL;
     spu_voice_attr.voice = voice_channel;
     spu_voice_attr.volume.left = 0x1fff;
     spu_voice_attr.volume.right = 0x1fff;
