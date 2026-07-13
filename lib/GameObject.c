@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Logger.h"
-#include "Graphics.h"
+#include "GPU.h"
+#include "stddef.h"
 
 void gobj_init(GameObject *gobj, RECT *bounds, void *prim, u_short x, u_short y, short w, short h, short x_speed, short y_speed, u_char health) {
     gobj->w = w;

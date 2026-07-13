@@ -1,6 +1,6 @@
 #include "../../lib/CD.h"
 #include "../../lib/Heap.h"
-#include "../../lib/Graphics.h"
+#include "../../lib/GPU.h"
 #include "../../lib/AssetManager.h"
 #include "../../lib/Controller.h"
 #include "../../lib/Animation.h"
@@ -26,7 +26,7 @@ int main() {
     TIM_IMAGE tim_tree;
 
     // Initialize system
-    gfx_init();
+    GPU_init();
 
     ctrl_init();
 
@@ -47,10 +47,10 @@ int main() {
     asmg_load_sprt(&tree_sprite, &tim_tree, data_tree);
 
     // Init dr tpages
-    GFX_DR_TPAGE_INIT(&dr_tpage_cappy, &tim_cappy);
-    GFX_DR_TPAGE_INIT(&dr_tpage_skybox, &tim_skybox);
-    GFX_DR_TPAGE_INIT(&dr_tpage_pillar, &tim_pillar);
-    GFX_DR_TPAGE_INIT(&dr_tpage_tree, &tim_tree);
+    GPU_DR_TPAGE_INIT(&dr_tpage_cappy, &tim_cappy);
+    GPU_DR_TPAGE_INIT(&dr_tpage_skybox, &tim_skybox);
+    GPU_DR_TPAGE_INIT(&dr_tpage_pillar, &tim_pillar);
+    GPU_DR_TPAGE_INIT(&dr_tpage_tree, &tim_tree);
 
     cd_data_free(data_cappy);
     cd_data_free(data_pillar);
@@ -70,17 +70,17 @@ int main() {
     // Cappy is a sprite sheet, we want one frame only
     while (1) {
         // Clear ot
-        gfx_clear_ot();
+        GPU_clear_ot();
         check_pad(p1);
 
         FntPrint("\n cappy u=%d,v=%d, t=%d", cappy_sprite.u0, cappy_sprite.v0, current_anim->acc_ticks);
         setUV0(&cappy_sprite, ((current_anim->curr_col) * cappy_sprite.w), ((current_anim->curr_row) * cappy_sprite.h));
-        gfx_sort_sprt_with_tpage(&cappy_sprite, &dr_tpage_cappy);
-        gfx_sort_sprt_with_tpage(&pillar_sprite, &dr_tpage_pillar);
-        gfx_sort_sprt_with_tpage(&tree_sprite, &dr_tpage_tree);
-        gfx_sort_sprt_with_tpage(&skybox_sprite, &dr_tpage_skybox);
+        GPU_sort_sprt_with_tpage(&cappy_sprite, &dr_tpage_cappy);
+        GPU_sort_sprt_with_tpage(&pillar_sprite, &dr_tpage_pillar);
+        GPU_sort_sprt_with_tpage(&tree_sprite, &dr_tpage_tree);
+        GPU_sort_sprt_with_tpage(&skybox_sprite, &dr_tpage_skybox);
 
-        gfx_display();
+        GPU_display();
     }
 }
 

@@ -1,15 +1,15 @@
 #include "libgpu.h"
-#include "../../lib/Graphics.h"
+#include "../../lib/GPU.h"
 
 int main() {
-    gfx_init();
+    GPU_init();
 
     while(1) {
-        gfx_clear_ot();
-        FntPrint("Hello World!, curr buff = %d", gfx_current_frame());
+        GPU_clear_ot();
+        FntPrint("Hello World!, curr buff = %d", GPU_current_frame());
         FntFlush(-1);
 
-        gfx_display();
+        GPU_display();
     }
 }
 

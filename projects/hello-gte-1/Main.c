@@ -1,7 +1,7 @@
 #include <libgpu.h>
 #include <libgte.h>
 #include <stdint.h>
-#include "../../lib/Graphics.h"
+#include "../../lib/GPU.h"
 #include "../../lib/Controller.h"
 
 Controller *ctrl;
@@ -26,15 +26,15 @@ void update_player_position();
 
 int main() {
     // Initialize system
-    gfx_init();
+    GPU_init();
     ctrl_init();
 
-    gfx_init_poly_f3(&space_ship, player_tri, 255, 255, 0);
+    GPU_init_poly_f3(&space_ship, player_tri, 255, 255, 0);
 
     // Cappy is a sprite sheet, we want one frame only
     while (1) {
         // Clear ot
-        gfx_clear_ot();
+        GPU_clear_ot();
 
         // Print player coordinates
         FntPrint("POS_X=%d (%d.%d)\n", pos_x, (pos_x>>12), (pos_x&0xfff) );
@@ -45,9 +45,9 @@ int main() {
         update_player_position();
 
         // Add your update and draw function calls here
-        gfx_sort_poly_f3(&space_ship);
+        GPU_sort_poly_f3(&space_ship);
 
-        gfx_display();
+        GPU_display();
     }
 }
 

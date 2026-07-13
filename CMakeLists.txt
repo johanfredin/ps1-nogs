@@ -24,7 +24,8 @@ add_executable(
         lib/Tiled.c
         lib/Controller.h
         lib/Controller.c
-        lib/Graphics.c
+        lib/GPU.h
+        lib/GPU.c
         lib/Animation.c
         lib/Animation.h
         lib/Heap.h
@@ -33,9 +34,9 @@ add_executable(
         # NON LIBGS Projects
         projects/hello-debug-font/Main.c
         projects/hello-flat-shaded-polys/Main.c
-        projects/hello-textured-sprites/Main.c
         projects/hello-controllers/Main.c
         projects/hello-animation/Main.c
+        projects/rotating-cube/Main.c
         lib/GameObject.h
         lib/GameObject.c
         projects/hello-gte-1/Main.c

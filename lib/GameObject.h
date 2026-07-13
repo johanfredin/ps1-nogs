@@ -2,7 +2,6 @@
 #define PSX_GAME_OBJECT_H
 
 #include "sys/types.h"
-#include "libgte.h"
 #include "libgpu.h"
 
 #define GOBJ_TYPE_PLAYER 0x0

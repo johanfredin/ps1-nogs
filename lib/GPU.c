@@ -2,7 +2,7 @@
 // Created by johan on 2024-02-18.
 //
 
-#include "Graphics.h"
+#include "GPU.h"
 #include <libetc.h>
 #include <stdint.h>
 
@@ -15,7 +15,7 @@ u_long ot[2][GFX_OT_LEN];
 // Current buffer
 uint8_t current_buffer;
 
-void gfx_init() {
+void GPU_init() {
     // Reset gpu and enable interrupts
     ResetGraph(0);
 
@@ -31,7 +31,7 @@ void gfx_init() {
     SetDefDrawEnv(&draw_env[1], 0, 0, GFX_SCREEN_W, GFX_SCREEN_H);
 
     // Specifies the clear color of the DRAWENV
-    gfx_set_bg_color(0, 0, 0);
+    GPU_set_bg_color(0, 0, 0);
 
     // Enable background clear
     draw_env[0].isbg = 1;
@@ -50,20 +50,20 @@ void gfx_init() {
     SetDispMask(1);
 }
 
-void gfx_set_bg_color(u_char r, u_char g, u_char b) {
+void GPU_set_bg_color(u_char r, u_char g, u_char b) {
     setRGB0(&draw_env[0], r, g, b);
     setRGB0(&draw_env[1], r, g, b);
 }
 
-uint8_t gfx_current_frame() {
+uint8_t GPU_current_frame() {
     return current_buffer;
 }
 
-void gfx_clear_ot() {
+void GPU_clear_ot() {
     ClearOTagR(ot[current_buffer], GFX_OT_LEN);
 }
 
-void gfx_display() {
+void GPU_display() {
     FntFlush(-1);
 
     // Wait for GPU to finish drawing and V-Blank
@@ -81,7 +81,7 @@ void gfx_display() {
     current_buffer = !current_buffer;
 }
 
-void gfx_init_poly_f3(POLY_F3 *poly, SVECTOR *v, u_char r, u_char g, u_char b) {
+void GPU_init_poly_f3(POLY_F3 *poly, SVECTOR *v, u_char r, u_char g, u_char b) {
     setPolyF3(poly);
     setRGB0(poly, r, g, b);
     setXY3(
@@ -92,24 +92,24 @@ void gfx_init_poly_f3(POLY_F3 *poly, SVECTOR *v, u_char r, u_char g, u_char b) {
     );
 }
 
-void gfx_sort_sprt(SPRT *sprt) {
+void GPU_sort_sprt(SPRT *sprt) {
     addPrim(&ot[current_buffer], sprt);
 }
 
-void gfx_sort_sprt_with_tpage(SPRT *sprt, DR_TPAGE *dr_tpage) {
+void GPU_sort_sprt_with_tpage(SPRT *sprt, DR_TPAGE *dr_tpage) {
     addPrim(&ot[current_buffer], sprt);
     addPrim(&ot[current_buffer], dr_tpage);
 }
 
-void gfx_sort_tile(TILE *tile) {
+void GPU_sort_tile(TILE *tile) {
     addPrim(&ot[current_buffer], tile);
 }
 
-void gfx_sort_poly_f3(POLY_F3 *poly) {
+void GPU_sort_poly_f3(POLY_F3 *poly) {
     addPrim(&ot[current_buffer], poly);
 }
 
-void gfx_sort_poly_ft4(POLY_FT4 *poly, DVECTOR *v) {
+void GPU_sort_poly_ft4(POLY_FT4 *poly, DVECTOR *v) {
     setXY4(
             poly,
             v[0].vx, v[0].vy,
@@ -120,7 +120,7 @@ void gfx_sort_poly_ft4(POLY_FT4 *poly, DVECTOR *v) {
     addPrim(&ot[current_buffer], poly);
 }
 
-void gfx_sort_poly_f4(POLY_F4 *poly, DVECTOR *v) {
+void GPU_sort_poly_f4(POLY_F4 *poly, DVECTOR *v) {
     setXY4(
             poly,
             v[0].vx, v[0].vy,
@@ -131,7 +131,7 @@ void gfx_sort_poly_f4(POLY_F4 *poly, DVECTOR *v) {
     addPrim(&ot[current_buffer], poly);
 }
 
-void gfx_sort_dr_tpage(DR_TPAGE *dr_tpage) {
+void GPU_sort_dr_tpage(DR_TPAGE *dr_tpage) {
     addPrim(&ot[current_buffer], dr_tpage);
 }
 

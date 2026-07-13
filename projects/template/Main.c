@@ -1,25 +1,22 @@
 #include "libgpu.h"
 #include "../../lib/CD.h"
-#include "../../lib/Logger.h"
-#include "../../lib/MemUtils.h"
-#include "../../lib/Graphics.h"
+#include "../../lib/GPU.h"
 #include "../../lib/Controller.h"
-#include "../../lib/AssetManager.h"
+#include "../../lib/Heap.h"
 
 Controller *ctrl;
 
 int main() {
     // Initialize system
-    gfx_init();
+    GPU_init();
 
     ctrl_init();
     ctrl = ctrl_read(CTRL_PAD_1);
 
-    MEM_INIT_HEAP_3();
-    CDR_INIT();
+    heap_init();
+    cd_init();
     // Load your resources here
 
-    CDR_CLOSE();
 
     // Cappy is a sprite sheet, we want one frame only
     while (1) {
