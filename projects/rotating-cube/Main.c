@@ -4,16 +4,16 @@
 #include "../../lib/Controller.h"
 #include "../../lib/Heap.h"
 
-Controller *ctrl;
+Controller *controller;
 
 int main() {
     // Initialize system
-    GPU_init();
+    GPU_Init();
 
-    ctrl_init();
-    ctrl = ctrl_read(CTRL_PAD_1);
+    Controller_Init();
+    controller = Controller_Read(CONTROLLER_PAD_1);
 
-    heap_init();
+    Heap_Init();
     CD_Init();
     // Load your resources here
 
@@ -21,16 +21,14 @@ int main() {
     // Cappy is a sprite sheet, we want one frame only
     while (1) {
         // Clear ot
-        GPU_clear_ot();
+        GPU_ClearOT();
         FntPrint("rotating-cube\n");
 
-        CTRL_LOG_INPUT(ctrl); // Just for debugging purposes, remove later on!
+        CONTROLLER_LOG_INPUT(controller); // Just for debugging purposes, remove later on!
 
         // Add your update and draw function calls here
 
-
-
-        GPU_display();
+        GPU_Display();
     }
 }
 

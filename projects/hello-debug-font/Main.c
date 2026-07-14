@@ -2,14 +2,14 @@
 #include "../../lib/GPU.h"
 
 int main() {
-    GPU_init();
+    GPU_Init();
 
     while(1) {
-        GPU_clear_ot();
-        FntPrint("Hello World!, curr buff = %d", GPU_current_frame());
+        GPU_ClearOT();
+        FntPrint("Hello World!, curr buff = %d", GPU_GetCurrentFrame());
         FntFlush(-1);
 
-        GPU_display();
+        GPU_Display();
     }
 }
 

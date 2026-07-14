@@ -26,13 +26,13 @@ int main() {
     TIM_IMAGE tim_tree;
 
     // Initialize system
-    GPU_init();
+    GPU_Init();
 
     Controller_Init();
 
     const Controller *p1 = Controller_Read(CONTROLLER_PAD_1);
 
-    heap_init();
+    Heap_Init();
     CD_Init();
     // Acquire crash and cappy tims from cd
     CdData *data_cappy = CD_DataMalloc("CAPPY.TIM");
@@ -69,17 +69,17 @@ int main() {
     // Cappy is a sprite sheet, we want one frame only
     while (1) {
         // Clear ot
-        GPU_clear_ot();
+        GPU_ClearOT();
         check_pad(p1);
 
         FntPrint("\n cappy u=%d,v=%d, t=%d", cappy_sprite.u0, cappy_sprite.v0, current_anim->acc_ticks);
         setUV0(&cappy_sprite, ((current_anim->curr_col) * cappy_sprite.w), ((current_anim->curr_row) * cappy_sprite.h));
-        GPU_sort_sprt_with_tpage(&cappy_sprite, &dr_tpage_cappy);
-        GPU_sort_sprt_with_tpage(&pillar_sprite, &dr_tpage_pillar);
-        GPU_sort_sprt_with_tpage(&tree_sprite, &dr_tpage_tree);
-        GPU_sort_sprt_with_tpage(&skybox_sprite, &dr_tpage_skybox);
+        GPU_SortSpriteWithTPage(&cappy_sprite, &dr_tpage_cappy);
+        GPU_SortSpriteWithTPage(&pillar_sprite, &dr_tpage_pillar);
+        GPU_SortSpriteWithTPage(&tree_sprite, &dr_tpage_tree);
+        GPU_SortSpriteWithTPage(&skybox_sprite, &dr_tpage_skybox);
 
-        GPU_display();
+        GPU_Display();
     }
 }
 

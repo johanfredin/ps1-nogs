@@ -10,10 +10,10 @@
 #define HEAP_START_ADDR 0x800F8000
 #define HEAP_SIZE 0x00100000            // 1 mb heap
 
-void heap_init();
-void *heap_malloc(size_t n);
-void *heap_calloc(size_t n, size_t s);
-void heap_free(void *ptr);
+void Heap_Init(void);
+void *Heap_Malloc(size_t n);
+void *Heap_Calloc(size_t n, size_t s);
+void Heap_Free(void *ptr);
 
 
 #endif //PS1_DEV_HEAP_H

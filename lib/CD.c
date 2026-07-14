@@ -25,12 +25,12 @@ void CD_Init(void) {
 }
 
 void CD_Free(CdData *p) {
-    heap_free(p->file);
-    heap_free(p);
+    Heap_Free(p->file);
+    Heap_Free(p);
 }
 
 CdData *CD_DataMalloc(char *name) {
-    CdData *cd_data = heap_calloc(1, sizeof(CdData));
+    CdData *cd_data = Heap_Calloc(1, sizeof(CdData));
     cd_data->name = name;
     CD_AcquireData(cd_data);
     return cd_data;
@@ -68,7 +68,7 @@ void CD_AcquireData(CdData *cd_data) {
     const int32_t num_secs = (int32_t)(file_pos.size + (CD_SECTOR - 1)) / CD_SECTOR;
     logr_log(TRACE, "CD.c", "cd_acquire_data", "seconds in: %d", num_secs);
     CdControl(CdlSetloc, (u_char *) &file_pos.pos, 0);
-    unsigned long *buff = heap_malloc(CD_SECTOR * num_secs);
+    unsigned long *buff = Heap_Malloc(CD_SECTOR * num_secs);
     CdRead(num_secs, buff, CdlModeSpeed);
     CdReadSync(0, 0);
 

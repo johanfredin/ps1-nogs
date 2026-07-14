@@ -6,16 +6,16 @@
 #include <libetc.h>
 #include <stdint.h>
 
-DISPENV disp_env[2];
-DRAWENV draw_env[2];
+static DISPENV disp_env[2];
+static DRAWENV draw_env[2];
 
 // Ordering table
-u_long ot[2][GFX_OT_LEN];
+static unsigned long ot[2][GPU_OT_LEN];
 
 // Current buffer
-uint8_t current_buffer;
+static uint8_t current_buffer;
 
-void GPU_init() {
+void GPU_Init(void) {
     // Reset gpu and enable interrupts
     ResetGraph(0);
 
@@ -23,15 +23,15 @@ void GPU_init() {
     SetVideoMode(0);
 
     // Configure the DISPENVs for NTSC mode
-    SetDefDispEnv(&disp_env[0], 0, 0, GFX_SCREEN_W, GFX_SCREEN_H);
-    SetDefDispEnv(&disp_env[1], 0, GFX_SCREEN_H, GFX_SCREEN_W, GFX_SCREEN_H);
+    SetDefDispEnv(&disp_env[0], 0, 0, GPU_SCREEN_W, GPU_SCREEN_H);
+    SetDefDispEnv(&disp_env[1], 0, GPU_SCREEN_H, GPU_SCREEN_W, GPU_SCREEN_H);
 
     // Configure the pair of DRAWENVs for the DISPENVs
-    SetDefDrawEnv(&draw_env[0], 0, GFX_SCREEN_H, GFX_SCREEN_W, GFX_SCREEN_H);
-    SetDefDrawEnv(&draw_env[1], 0, 0, GFX_SCREEN_W, GFX_SCREEN_H);
+    SetDefDrawEnv(&draw_env[0], 0, GPU_SCREEN_H, GPU_SCREEN_W, GPU_SCREEN_H);
+    SetDefDrawEnv(&draw_env[1], 0, 0, GPU_SCREEN_W, GPU_SCREEN_H);
 
     // Specifies the clear color of the DRAWENV
-    GPU_set_bg_color(0, 0, 0);
+    GPU_SetBGColor(0, 0, 0);
 
     // Enable background clear
     draw_env[0].isbg = 1;
@@ -44,26 +44,26 @@ void GPU_init() {
     current_buffer = 0;
 
     FntLoad(960, 0);
-    FntOpen(20, 10, GFX_SCREEN_W, 50, 0, 256);
+    FntOpen(20, 10, GPU_SCREEN_W, 50, 0, 256);
 
     // Enable display
     SetDispMask(1);
 }
 
-void GPU_set_bg_color(u_char r, u_char g, u_char b) {
+void GPU_SetBGColor(const u_char r, const u_char g, const u_char b) {
     setRGB0(&draw_env[0], r, g, b);
     setRGB0(&draw_env[1], r, g, b);
 }
 
-uint8_t GPU_current_frame() {
+uint8_t GPU_GetCurrentFrame(void) {
     return current_buffer;
 }
 
-void GPU_clear_ot() {
-    ClearOTagR(ot[current_buffer], GFX_OT_LEN);
+void GPU_ClearOT() {
+    ClearOTagR(ot[current_buffer], GPU_OT_LEN);
 }
 
-void GPU_display() {
+void GPU_Display() {
     FntFlush(-1);
 
     // Wait for GPU to finish drawing and V-Blank
@@ -75,13 +75,13 @@ void GPU_display() {
     PutDrawEnv(&draw_env[current_buffer]);
 
     // Draw the ordering table
-    DrawOTag(&ot[current_buffer][GFX_OT_LEN - 1]);
+    DrawOTag(&ot[current_buffer][GPU_OT_LEN - 1]);
 
     // Flip current buffer
     current_buffer = !current_buffer;
 }
 
-void GPU_init_poly_f3(POLY_F3 *poly, SVECTOR *v, u_char r, u_char g, u_char b) {
+void GPU_InitPolyF3(POLY_F3 *poly, const SVECTOR *v, const uint8_t r, const uint8_t g, const uint8_t b) {
     setPolyF3(poly);
     setRGB0(poly, r, g, b);
     setXY3(
@@ -92,24 +92,24 @@ void GPU_init_poly_f3(POLY_F3 *poly, SVECTOR *v, u_char r, u_char g, u_char b) {
     );
 }
 
-void GPU_sort_sprt(SPRT *sprt) {
-    addPrim(&ot[current_buffer], sprt);
+void GPU_SortSprite(SPRT *sprite) {
+    addPrim(&ot[current_buffer], sprite);
 }
 
-void GPU_sort_sprt_with_tpage(SPRT *sprt, DR_TPAGE *dr_tpage) {
+void GPU_SortSpriteWithTPage(SPRT *sprt, DR_TPAGE *dr_tpage) {
     addPrim(&ot[current_buffer], sprt);
     addPrim(&ot[current_buffer], dr_tpage);
 }
 
-void GPU_sort_tile(TILE *tile) {
+void GPU_SortTile(TILE *tile) {
     addPrim(&ot[current_buffer], tile);
 }
 
-void GPU_sort_poly_f3(POLY_F3 *poly) {
+void GPU_SortPolyF3(POLY_F3 *poly) {
     addPrim(&ot[current_buffer], poly);
 }
 
-void GPU_sort_poly_ft4(POLY_FT4 *poly, DVECTOR *v) {
+void GPU_SortPolyFT4(POLY_FT4 *poly, const DVECTOR *v) {
     setXY4(
             poly,
             v[0].vx, v[0].vy,
@@ -120,7 +120,7 @@ void GPU_sort_poly_ft4(POLY_FT4 *poly, DVECTOR *v) {
     addPrim(&ot[current_buffer], poly);
 }
 
-void GPU_sort_poly_f4(POLY_F4 *poly, DVECTOR *v) {
+void GPU_SortPolyF4(POLY_F4 *poly, const DVECTOR *v) {
     setXY4(
             poly,
             v[0].vx, v[0].vy,
@@ -131,7 +131,7 @@ void GPU_sort_poly_f4(POLY_F4 *poly, DVECTOR *v) {
     addPrim(&ot[current_buffer], poly);
 }
 
-void GPU_sort_dr_tpage(DR_TPAGE *dr_tpage) {
+void GPU_SortDRTpage(DR_TPAGE *dr_tpage) {
     addPrim(&ot[current_buffer], dr_tpage);
 }
 

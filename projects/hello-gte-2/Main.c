@@ -5,16 +5,16 @@
 #include "../../lib/AssetManager.h"
 #include "../../lib/Heap.h"
 
-Controller *ctrl;
+Controller *controller;
 
 int main() {
     // Initialize system
-    GPU_init();
-    GPU_set_bg_color(50, 50, 50);
+    GPU_Init();
+    GPU_SetBGColor(50, 50, 50);
 
-    heap_init();
-    ctrl_init();
-    ctrl = ctrl_read(CTRL_PAD_1);
+    Heap_Init();
+    Controller_Init();
+    controller = CONTROLLER_READ_P1();
 
     CdData ship_data = {};
     POLY_FT4 ship_poly;
@@ -38,16 +38,16 @@ int main() {
     // Cappy is a sprite sheet, we want one frame only
     while (1) {
         // Clear ot
-        GPU_clear_ot();
+        GPU_ClearOT();
         FntPrint("Hello hello-gte-2\n");
 
-        CTRL_LOG_INPUT(ctrl); // Just for debugging purposes, remove later on!
+        CONTROLLER_LOG_INPUT(controller); // Just for debugging purposes, remove later on!
 
         // Add your update and draw function calls here
-        GPU_sort_poly_ft4(&ship_poly, coords);
+        GPU_SortPolyFT4(&ship_poly, coords);
 
 
-        GPU_display();
+        GPU_Display();
     }
 }
 

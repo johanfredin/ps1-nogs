@@ -28,10 +28,10 @@ void GameObject_Tick(GameObject *game_object) {
 
 void GameObject_CameraInit(Camera *cam, GameObject *obj_in_focus) {
     cam->x = cam->y = 0;
-    cam->viewport_w = GFX_SCREEN_W;
-    cam->viewport_h = GFX_SCREEN_H;
-    cam->map_w = GFX_SCREEN_W << 1;
-    cam->map_h = GFX_SCREEN_H << 1;
+    cam->viewport_w = GPU_SCREEN_W;
+    cam->viewport_h = GPU_SCREEN_H;
+    cam->map_w = GPU_SCREEN_W << 1;
+    cam->map_h = GPU_SCREEN_H << 1;
     cam->obj_in_focus = obj_in_focus;
 }
 

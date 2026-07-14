@@ -4,18 +4,18 @@
 #include "../../lib/GPU.h"
 
 int main() {
-    GPU_init();
-    GPU_set_bg_color(0x10, 0x25, 0x55);
-    ctrl_init();
+    GPU_Init();
+    GPU_SetBGColor(0x10, 0x25, 0x55);
+    Controller_Init();
 
-    const Controller *p1 = ctrl_read(CTRL_PAD_1);
+    const Controller *p1 = Controller_Read(CONTROLLER_PAD_1);
 
     while (1) {
-        GPU_clear_ot();
+        GPU_ClearOT();
         FntPrint("Hello Controllers!\n");
-        CTRL_LOG_INPUT(p1);
+        CONTROLLER_LOG_INPUT(p1);
         FntFlush(-1);
-        GPU_display();
+        GPU_Display();
     }
 }
 

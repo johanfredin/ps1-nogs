@@ -4,7 +4,7 @@
 #include "../../lib/GPU.h"
 #include "../../lib/Controller.h"
 
-Controller *ctrl;
+Controller *controller;
 POLY_F3 space_ship;
 SVECTOR v[3];
 
@@ -15,8 +15,8 @@ SVECTOR player_tri[3] = {
         {-10, 20, ONE * 2},
 };
 
-int32_t pos_x = ONE * (GFX_SCREEN_W >> 1);
-int32_t pos_y = ONE * (GFX_SCREEN_H >> 1);
+int32_t pos_x = ONE * (GPU_SCREEN_W >> 1);
+int32_t pos_y = ONE * (GPU_SCREEN_H >> 1);
 
 int angle = 0;
 int scale = 1;
@@ -26,15 +26,15 @@ void update_player_position();
 
 int main() {
     // Initialize system
-    GPU_init();
-    ctrl_init();
+    GPU_Init();
+    Controller_Init();
 
-    GPU_init_poly_f3(&space_ship, player_tri, 255, 255, 0);
+    GPU_InitPolyF3(&space_ship, player_tri, 255, 255, 0);
 
     // Cappy is a sprite sheet, we want one frame only
     while (1) {
         // Clear ot
-        GPU_clear_ot();
+        GPU_ClearOT();
 
         // Print player coordinates
         FntPrint("POS_X=%d (%d.%d)\n", pos_x, (pos_x>>12), (pos_x&0xfff) );
@@ -45,33 +45,33 @@ int main() {
         update_player_position();
 
         // Add your update and draw function calls here
-        GPU_sort_poly_f3(&space_ship);
+        GPU_SortPolyF3(&space_ship);
 
-        GPU_display();
+        GPU_Display();
     }
 }
 
 void check_pad() {
-    ctrl = ctrl_read(CTRL_PAD_1);
-    if (CTRL_IS_CONNECTED(ctrl)) {
-        if (CTRL_IS_BTN_UP(ctrl)) {
+    controller = CONTROLLER_READ_P1();
+    if (CONTROLLER_IS_CONNECTED(controller)) {
+        if (CONTROLLER_IS_BTN_UP(controller)) {
             pos_x += csin(angle);
             pos_y -= ccos(angle);
         }
-        if (CTRL_IS_BTN_DOWN(ctrl)) {
+        if (CONTROLLER_IS_BTN_DOWN(controller)) {
             pos_x -= csin(angle);
             pos_y += ccos(angle);
         }
-        if (CTRL_IS_BTN_LEFT(ctrl)) {
+        if (CONTROLLER_IS_BTN_LEFT(controller)) {
             angle -= 16; // Turns counter-clockwise
         }
-        if (CTRL_IS_BTN_RIGHT(ctrl)) {
+        if (CONTROLLER_IS_BTN_RIGHT(controller)) {
             angle += 16; // Turns clockwise
         }
-        if (CTRL_IS_BTN_TRIANGLE(ctrl)) {
+        if (CONTROLLER_IS_BTN_TRIANGLE(controller)) {
             scale += 1;
         }
-        if (CTRL_IS_BTN_CROSS(ctrl)) {
+        if (CONTROLLER_IS_BTN_CROSS(controller)) {
             scale -= 1;
         }
     }

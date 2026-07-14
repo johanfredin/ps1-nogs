@@ -17,9 +17,9 @@ typedef struct JSON_Data {
     struct JSON_Data *next;
 } JSON_Data;
 
-JSON_Data *jsonp_parse(char *file_content);
-void jsonp_print_data(JSON_Data *root);
-void jsonp_free(JSON_Data *root);
+JSON_Data *JSON_Parse(char *file_content);
+void JSON_Print(const JSON_Data *root);
+void JSON_Destroy(JSON_Data *root);
 
 #endif // BADJSON_PARSER_H
 

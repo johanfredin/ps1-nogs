@@ -59,7 +59,7 @@
 
 #define CONTROLLER_P1_INTERACT CONTROLLER_BTN_START
 
-#define CONTROLLER_READ_P1() CONTROLLER_read(CONTROLLER_PAD_1)
+#define CONTROLLER_READ_P1() Controller_Read(CONTROLLER_PAD_1)
 
 #define CONTROLLER_LOG_INPUT(pad)                             \
     char *current_button = "";                          \
