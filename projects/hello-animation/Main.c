@@ -5,11 +5,11 @@
 #include "../../lib/Controller.h"
 #include "../../lib/Animation.h"
 
-Animation anim_idle, anim_walk_right;
-Animation *current_anim;
-SPRT cappy_sprite;
+static Animation anim_idle, anim_walk_right;
+static Animation *current_anim;
+static SPRT cappy_sprite;
 
-void check_pad(Controller *pad);
+static void check_pad(const Controller *pad);
 
 int main() {
 
@@ -28,23 +28,23 @@ int main() {
     // Initialize system
     GPU_init();
 
-    ctrl_init();
+    Controller_Init();
 
-    Controller *p1 = ctrl_read(CTRL_PAD_1);
+    const Controller *p1 = Controller_Read(CONTROLLER_PAD_1);
 
     heap_init();
-    cd_init();
+    CD_Init();
     // Acquire crash and cappy tims from cd
-    CdData *data_cappy = cd_data_malloc("CAPPY.TIM");
-    CdData *data_skybox = cd_data_malloc("SKYBOX.TIM");
-    CdData *data_pillar = cd_data_malloc("PILLAR.TIM");
-    CdData *data_tree = cd_data_malloc("TREE.TIM");
+    CdData *data_cappy = CD_DataMalloc("CAPPY.TIM");
+    CdData *data_skybox = CD_DataMalloc("SKYBOX.TIM");
+    CdData *data_pillar = CD_DataMalloc("PILLAR.TIM");
+    CdData *data_tree = CD_DataMalloc("TREE.TIM");
 
     // Acquire tim data
-    asmg_load_sprt(&cappy_sprite, &tim_cappy, data_cappy);
-    asmg_load_sprt(&skybox_sprite, &tim_skybox, data_skybox);
-    asmg_load_sprt(&pillar_sprite, &tim_pillar, data_pillar);
-    asmg_load_sprt(&tree_sprite, &tim_tree, data_tree);
+    AssetManager_LoadSprite(&cappy_sprite, &tim_cappy, data_cappy);
+    AssetManager_LoadSprite(&skybox_sprite, &tim_skybox, data_skybox);
+    AssetManager_LoadSprite(&pillar_sprite, &tim_pillar, data_pillar);
+    AssetManager_LoadSprite(&tree_sprite, &tim_tree, data_tree);
 
     // Init dr tpages
     GPU_DR_TPAGE_INIT(&dr_tpage_cappy, &tim_cappy);
@@ -52,10 +52,10 @@ int main() {
     GPU_DR_TPAGE_INIT(&dr_tpage_pillar, &tim_pillar);
     GPU_DR_TPAGE_INIT(&dr_tpage_tree, &tim_tree);
 
-    cd_data_free(data_cappy);
-    cd_data_free(data_pillar);
-    cd_data_free(data_skybox);
-    cd_data_free(data_tree);
+    CD_Free(data_cappy);
+    CD_Free(data_pillar);
+    CD_Free(data_skybox);
+    CD_Free(data_tree);
 
     setXY0(&cappy_sprite, 100, 128);
     setWH(&cappy_sprite, 64, 64);
@@ -63,9 +63,8 @@ int main() {
     setXY0(&tree_sprite, 20, 0);
 
     // Create animation
-    anim_init(&anim_idle, 4, 2, 15, 0);
-    anim_init(&anim_walk_right, 4, 1, 5, 3);
-    ctrl_init();
+    Animation_Init(&anim_idle, 4, 2, 15, 0);
+    Animation_Init(&anim_walk_right, 4, 1, 5, 3);
 
     // Cappy is a sprite sheet, we want one frame only
     while (1) {
@@ -84,15 +83,14 @@ int main() {
     }
 }
 
-void check_pad(Controller *pad) {
+static void check_pad(const Controller *pad) {
     // Get the id
-    char *current_button = "";
-    if (CTRL_IS_CONNECTED(pad)) {
-        if (CTRL_NO_INPUT(pad)) {
-            current_anim = anim_tick(&anim_idle);
+    if (CONTROLLER_IS_CONNECTED(pad)) {
+        if (CONTROLLER_NO_INPUT(pad)) {
+            current_anim = Animation_Tick(&anim_idle);
         }
-        if (CTRL_IS_BTN_RIGHT(pad)) {
-            current_anim = anim_tick(&anim_walk_right);
+        if (CONTROLLER_IS_BTN_RIGHT(pad)) {
+            current_anim = Animation_Tick(&anim_walk_right);
         }
     }
 

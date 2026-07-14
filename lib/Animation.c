@@ -5,7 +5,7 @@
 #include "Animation.h"
 #include "Logger.h"
 
-void anim_init(Animation *animation, u_char cols, u_char rows, u_char ticks_per_frame, u_char start_row) {
+void Animation_Init(Animation *animation, const uint8_t cols, const uint8_t rows, const uint8_t ticks_per_frame, const uint8_t start_row) {
     animation->cols = cols;
     animation->rows = rows;
     animation->ticks_per_frame = ticks_per_frame;
@@ -15,10 +15,10 @@ void anim_init(Animation *animation, u_char cols, u_char rows, u_char ticks_per_
     animation->start_row = start_row;
 }
 
-Animation *anim_tick(Animation *anim) {
-    u_char curr_col = anim->curr_col;
-    u_char curr_row = anim->curr_row;
-    u_char acc_ticks = anim->acc_ticks;
+Animation *Animation_Tick(Animation *anim) {
+    uint8_t curr_col = anim->curr_col;
+    uint8_t curr_row = anim->curr_row;
+    uint8_t acc_ticks = anim->acc_ticks;
 
     if (acc_ticks >= anim->ticks_per_frame) {
         if (curr_col >= anim->cols) {

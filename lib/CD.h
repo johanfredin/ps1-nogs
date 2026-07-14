@@ -5,6 +5,7 @@
 #define PSX_CD_READER_H
 
 #define CD_SECTOR 0x800
+#include <stdint.h>
 
 /**
  * Represents a chunk of data on the cd. Data could be anything from a
@@ -29,17 +30,16 @@ typedef struct CdDATrack {
     unsigned char is_playing: 1;
 } CdDATrack;
 
-void cd_init();
-void cd_data_init(CdData *p, char *name);
-CdData *cd_data_malloc(char *name);
-void cd_data_free(CdData *p);
+void CD_Init(void);
+void CD_Free(CdData *p);
+CdData *CD_DataMalloc(char *name);
 
-CdData *cd_find(char *name, CdData **assets, unsigned char assets_cnt);
+CdData *CD_Find(char *name, CdData **assets, uint8_t assets_cnt);
 
-void cd_acquire_data(CdData *cd_data);
+void CD_AcquireData(CdData *cd_data);
 
-void cd_da_play(CdDATrack *track);
-void cd_da_stop(CdDATrack *track);
-void cd_da_swap(CdDATrack *from, CdDATrack *to);
+void CD_PlayDATrack(CdDATrack *track);
+void CD_StopDATrack(CdDATrack *track);
+void CD_SwapDATrack(CdDATrack *from, CdDATrack *to);
 
 #endif // PSX_CD_READER_H

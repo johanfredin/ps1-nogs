@@ -2,6 +2,9 @@
 #include <libspu.h>
 
 #include "AssetManager.h"
+
+#include <stdint.h>
+
 #include "Logger.h"
 
 /*
@@ -11,21 +14,21 @@
 #define ImageToVRamSize(size, mode) ((size) / (1 << (2 - ((mode) & 3))))
 #define VRamToImageSize(size, mode) ((size) * (1 << (2 - ((mode) & 3))))
 
-SpuCommonAttr spu_common_attr;
-SpuVoiceAttr spu_voice_attr;
-long vag_spu_addr;
-char rec[SPU_MALLOC_RECSIZ * (ASMG_SOUND_MALLOC_MAX + 1)];
+static SpuCommonAttr spu_common_attr;
+static SpuVoiceAttr spu_voice_attr;
+static long vag_spu_addr;
+static char rec[SPU_MALLOC_RECSIZ * (ASSETMANAGER_SOUND_MALLOC_MAX + 1)];
 
-void asmg_load_tim_data(TIM_IMAGE *tim_data, CdData *cdr_data) {
+void AssetManager_LoadTIMData(TIM_IMAGE *tim_data, const CdData *cd_data) {
     // Read TIM information
-    OpenTIM(cdr_data->file);
+    OpenTIM(cd_data->file);
     ReadTIM(tim_data);
 
     // Upload pixel data to framebuffer
     LoadImage(tim_data->prect, tim_data->paddr);
     DrawSync(0);
     logr_log(INFO, "Main.c", "load_tim_data",
-             "Texture loaded from %s {x, y, w, h}=%d, %d, %d, %d", cdr_data->name, tim_data->prect->x, tim_data->prect->y,
+             "Texture loaded from %s {x, y, w, h}=%d, %d, %d, %d", cd_data->name, tim_data->prect->x, tim_data->prect->y,
              tim_data->prect->w, tim_data->prect->h);
 
     // Upload CLUT to framebuffer if present
@@ -33,19 +36,21 @@ void asmg_load_tim_data(TIM_IMAGE *tim_data, CdData *cdr_data) {
         LoadImage(tim_data->crect, tim_data->caddr);
         DrawSync(0);
         logr_log(INFO, "Main.c", "load_tim_data",
-                 "Clut added for %s {x, y}=%d, %d", cdr_data->name, tim_data->crect->x, tim_data->crect->y);
+                 "Clut added for %s {x, y}=%d, %d", cd_data->name, tim_data->crect->x, tim_data->crect->y);
     }
 }
 
-void asmg_load_sprt(SPRT *sprt, TIM_IMAGE *tim, CdData *cdr_data) {
-    asmg_load_tim_data(tim, cdr_data);
+void AssetManager_LoadSprite(SPRT *sprt, TIM_IMAGE *tim, const CdData *cd_data) {
+    AssetManager_LoadTIMData(tim, cd_data);
 
     setSprt(sprt);
 
     // Set poly_ft4 size
-    short w = sprt->w = tim->prect->w << (2 - tim->mode & 0x3);
-    short h = sprt->h = tim->prect->h;
-    setWH(sprt, w, h);
+    setWH(
+        sprt,
+        tim->prect->w << (2 - tim->mode & 0x3),
+        tim->prect->h
+    );
     setXY0(sprt, 0, 0);
 
     // Get CLUT values (if poly_ft4 not 16 bit)
@@ -54,8 +59,8 @@ void asmg_load_sprt(SPRT *sprt, TIM_IMAGE *tim, CdData *cdr_data) {
     }
 
     // Set UV offset
-    u_short poly_ft4_u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
-    u_short poly_ft4_v = (tim->prect->y & 0xff);
+    const uint16_t poly_ft4_u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
+    const uint16_t poly_ft4_v = (tim->prect->y & 0xff);
     setUV0(sprt, poly_ft4_u, poly_ft4_v);
     setRGB0(sprt, 128, 128, 128);
 
@@ -65,8 +70,8 @@ void asmg_load_sprt(SPRT *sprt, TIM_IMAGE *tim, CdData *cdr_data) {
     );
 }
 
-void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdData *cdr_data) {
-    asmg_load_tim_data(tim, cdr_data);
+void AssetManager_LoadPolyFT4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, const CdData *cd_data) {
+    AssetManager_LoadTIMData(tim, cd_data);
 
     setPolyFT4(poly_ft4);
     poly_ft4->tpage = getTPage(tim->mode & 0x3, 0, tim->prect->x, tim->prect->y);
@@ -77,8 +82,8 @@ void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdData *cdr_data) {
     }
 
     // Set UV offset
-    u_short u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
-    u_short v = (tim->prect->y & 0xff);
+    const uint16_t u = ((tim->prect->x & 0x3f) << (2 - tim->mode & 0x3));
+    const uint16_t v = (tim->prect->y & 0xff);
     setUVWH(poly_ft4, u, v, tim->prect->w, tim->prect->h);
     setRGB0(poly_ft4, 128, 128, 128);
 
@@ -88,9 +93,9 @@ void asmg_load_poly_ft4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, CdData *cdr_data) {
     );
 }
 
-void asmg_audio_init() {
+void AssetManager_AudioInit() {
     SpuInit();
-    SpuInitMalloc(ASMG_SOUND_MALLOC_MAX, rec);
+    SpuInitMalloc(ASSETMANAGER_SOUND_MALLOC_MAX, rec);
     spu_common_attr.mask = SPU_COMMON_MVOLL | SPU_COMMON_MVOLR;
     spu_common_attr.mvol.left = 0x3fff;     // Master left vol
     spu_common_attr.mvol.right = 0x3fff;    // Master right vol
@@ -100,18 +105,18 @@ void asmg_audio_init() {
     logr_log(INFO, "AssetManager.c", "asmg_audio_init", "SPU initialized");
 }
 
-void asmg_transfer_vag_to_spu(CdData *cdr_data, u_long voice_channel) {
+void AssetManager_TransferVAGToSPU(CdData *cd_data, u_long voice_channel) {
     SpuSetTransferMode(SpuTransByDMA);                                   // set transfer mode to DMA
-    vag_spu_addr = SpuMalloc((long)(cdr_data->sectors) * CD_SECTOR);     // allocate SPU memory for sound
+    vag_spu_addr = SpuMalloc((long)(cd_data->sectors) * CD_SECTOR);     // allocate SPU memory for sound
     if(vag_spu_addr == -1) {
-        logr_log(ERROR, "AssetManager.c", "asmg_transfer_vag_to_spu", "Could not allocate audio file %s, shutting down", cdr_data->name);
+        logr_log(ERROR, "AssetManager.c", "asmg_transfer_vag_to_spu", "Could not allocate audio file %s, shutting down", cd_data->name);
         exit(1);
     }
 
     SpuSetTransferStartAddr(vag_spu_addr);                           // set transfer starting address to malloced area
-    u_char *vag_file = (u_char *) cdr_data->file;
-    ASMG_AUDIO_SKIP_VAG_HEADER(vag_file);
-    SpuWrite(vag_file, cdr_data->sectors * CD_SECTOR);         // perform actual transfer
+    uint8_t *vag_file = (uint8_t *) cd_data->file;
+    ASSETMANAGER_AUDIO_SKIP_VAG_HEADER(vag_file);
+    SpuWrite(vag_file, cd_data->sectors * CD_SECTOR);         // perform actual transfer
     SpuIsTransferCompleted(SPU_TRANSFER_WAIT);                       // wait for dma to complete
     spu_voice_attr.mask = SPU_VOICE_VOLL |
                           SPU_VOICE_VOLR |

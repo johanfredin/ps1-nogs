@@ -8,24 +8,25 @@
 
 #define DPAD_PLAYER_1 1
 #define DPAD_P1_INTERACT PADstart
+#include <stdint.h>
 
 typedef struct DPad {
-    int id;
-    unsigned int curr_btn;
+    int32_t id;
+    uint32_t curr_btn;
 } DPad;
 
 /**
  * Allocates space for Controller on the heap and sets id to passed in param.
  * @return ptr to new controller
  */
-DPad *dpad_init();
+DPad *DPad_Init();
 
-#define DPAD_READ_INPUT(ctrl) (ctrl)->curr_btn = PadRead(DPAD_PLAYER_1)
-#define DPAD_DPAD_UP(ctrl) ((ctrl)->curr_btn & PADLup)
-#define DPAD_DPAD_DOWN(ctrl) ((ctrl)->curr_btn & PADLdown)
-#define DPAD_DPAD_LEFT(ctrl) ((ctrl)->curr_btn & PADLleft)
-#define DPAD_DPAD_RIGHT(ctrl) ((ctrl)->curr_btn & PADLright)
-#define DPAD_BTN_INTERACT(ctrl) ((ctrl)->curr_btn & DPAD_P1_INTERACT)
+#define DPAD_READ_INPUT(controller) (controller)->curr_btn = PadRead(DPAD_PLAYER_1)
+#define DPAD_DPAD_UP(controller) ((controller)->curr_btn & PADLup)
+#define DPAD_DPAD_DOWN(controller) ((controller)->curr_btn & PADLdown)
+#define DPAD_DPAD_LEFT(controller) ((controller)->curr_btn & PADLleft)
+#define DPAD_DPAD_RIGHT(controller) ((controller)->curr_btn & PADLright)
+#define DPAD_BTN_INTERACT(controller) ((controller)->curr_btn & DPAD_P1_INTERACT)
 
 
 #endif //PSX_DEV_DPAD_H

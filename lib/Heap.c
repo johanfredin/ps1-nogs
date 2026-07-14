@@ -21,7 +21,7 @@ void *heap_malloc(size_t n) {
     return p;
 }
 
-void *heap_calloc(size_t n, size_t s) {
+void *heap_calloc(const size_t n, const size_t s) {
     void *p = calloc3(n, s);
     if (p == NULL) {
         logr_log(ERROR, "Heap.c", "heap_calloc", "Null ptr returned from calloc, terminating...");

@@ -14,7 +14,7 @@ int main() {
     ctrl = ctrl_read(CTRL_PAD_1);
 
     heap_init();
-    cd_init();
+    CD_Init();
     // Load your resources here
 
 

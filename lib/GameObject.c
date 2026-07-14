@@ -3,30 +3,30 @@
 #include "GPU.h"
 #include "stddef.h"
 
-void gobj_init(GameObject *gobj, RECT *bounds, void *prim, u_short x, u_short y, short w, short h, short x_speed, short y_speed, u_char health) {
-    gobj->w = w;
-    gobj->h = h;
-    gobj->prim = prim;
-    gobj->x_speed = x_speed;
-    gobj->y_speed = y_speed;
-    gobj->health = health;
-    gobj->x = x;
-    gobj->y = y;
-    gobj->heading = 0;
-    gobj->can_move = 1;
-    gobj->bounds = bounds;
-    setRECT(bounds, x, y, w, h);
-    LOGR_LOG_GOBJ(DEBUG, gobj);
+void GameObject_Init(GameObject *gameobject, RECT *bounds, void *prim, const uint16_t spawn_x, const uint16_t spawn_y, const int16_t w, const int16_t h, const int16_t x_speed, const int16_t y_speed, const uint8_t health) {
+    gameobject->w = w;
+    gameobject->h = h;
+    gameobject->prim = prim;
+    gameobject->x_speed = x_speed;
+    gameobject->y_speed = y_speed;
+    gameobject->health = health;
+    gameobject->x = spawn_x;
+    gameobject->y = spawn_y;
+    gameobject->heading = 0;
+    gameobject->can_move = 1;
+    gameobject->bounds = bounds;
+    setRECT(bounds, spawn_x, spawn_y, w, h);
+    LOGR_LOG_GOBJ(DEBUG, gameobject);
 }
 
-void gobj_tick(GameObject *game_object) {
+void GameObject_Tick(GameObject *game_object) {
     game_object->x += game_object->x_speed;
     game_object->y += game_object->y_speed;
     game_object->bounds->x += game_object->x_speed;
     game_object->bounds->y += game_object->y_speed;
 }
 
-void gobj_camera_init(Camera *cam, GameObject *obj_in_focus) {
+void GameObject_CameraInit(Camera *cam, GameObject *obj_in_focus) {
     cam->x = cam->y = 0;
     cam->viewport_w = GFX_SCREEN_W;
     cam->viewport_h = GFX_SCREEN_H;
@@ -35,9 +35,9 @@ void gobj_camera_init(Camera *cam, GameObject *obj_in_focus) {
     cam->obj_in_focus = obj_in_focus;
 }
 
-void gobj_camera_tick(Camera *cam) {
-    u_short obj_x = cam->obj_in_focus->bounds->x + (cam->obj_in_focus->bounds->w >> 1);
-    u_short obj_y = cam->obj_in_focus->bounds->y + (cam->obj_in_focus->bounds->h >> 1);
+void GameObject_CameraTick(Camera *cam) {
+    const uint16_t obj_x = cam->obj_in_focus->bounds->x + (cam->obj_in_focus->bounds->w >> 1);
+    const uint16_t obj_y = cam->obj_in_focus->bounds->y + (cam->obj_in_focus->bounds->h >> 1);
 
     // If nothing to focus on then don't do anything
     if (cam->obj_in_focus == NULL) {
@@ -45,8 +45,8 @@ void gobj_camera_tick(Camera *cam) {
     }
 
     // Set game object in the middle of the viewport
-    short x = (obj_x - (cam->viewport_w >> 1));
-    short y = (obj_y - (cam->viewport_h >> 1));
+    int16_t x = obj_x - (cam->viewport_w >> 1);
+    int16_t y = obj_y - (cam->viewport_h >> 1);
 
     // Handle clamping
     if (x < 0) {

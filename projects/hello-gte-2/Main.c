@@ -16,15 +16,15 @@ int main() {
     ctrl_init();
     ctrl = ctrl_read(CTRL_PAD_1);
 
-    CdData ship_data;
+    CdData ship_data = {};
     POLY_FT4 ship_poly;
     TIM_IMAGE tim;
 
-    cd_init();
-    cd_data_init(&ship_data, "SHIP.TIM");
+    CD_Init();
+    ship_data.name = "SHIP.TIM";
     // Load your resources here
-    cd_acquire_data(&ship_data);
-    asmg_load_poly_ft4(&ship_poly, &tim, &ship_data);
+    CD_AcquireData(&ship_data);
+    AssetManager_LoadPolyFT4(&ship_poly, &tim, &ship_data);
 
 
     uint8_t w = 87, h = 80;

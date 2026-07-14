@@ -1,72 +1,72 @@
 #ifndef PSX_GAME_OBJECT_H
 #define PSX_GAME_OBJECT_H
 
-#include "sys/types.h"
+#include <stdint.h>
+
 #include "libgpu.h"
 
-#define GOBJ_TYPE_PLAYER 0x0
-#define GOBJ_TYPE_NPC 0x1
+#define GAMEOBJECT_TYPE_PLAYER 0x0
+#define GAMEOBJECT_TYPE_NPC 0x1
 
-#define GOBJ_HEADING_NONE 0x0
-#define GOBJ_HEADING_UP 0x1
-#define GOBJ_HEADING_DOWN 0x2
-#define GOBJ_HEADING_LEFT 0x4
-#define GOBJ_HEADING_RIGHT 0x8
+#define GAMEOBJECT_HEADING_NONE 0x0
+#define GAMEOBJECT_HEADING_UP 0x1
+#define GAMEOBJECT_HEADING_DOWN 0x2
+#define GAMEOBJECT_HEADING_LEFT 0x4
+#define GAMEOBJECT_HEADING_RIGHT 0x8
 
 typedef struct GameObject {
     void *prim;
     RECT *bounds;
-    short old_x, old_y;
-    u_short w, h;
-    u_char x, y;
-    short x_speed, y_speed;
-    u_char health: 7;
-    u_char can_move: 1;
-    u_char heading;
+    int16_t old_x, old_y;
+    int16_t x_speed, y_speed;
+    uint16_t w, h;
+    uint8_t health: 7;
+    uint8_t can_move: 1;
+    uint8_t x, y;
+    uint8_t heading;
 } GameObject;
 
 
 typedef struct Camera {
-    short x, y;
-    u_short viewport_w, viewport_h;
-    u_short map_w, map_h;
+    int16_t x, y;
+    uint16_t viewport_w, viewport_h;
+    uint16_t map_w, map_h;
     GameObject *obj_in_focus;
 } Camera;
 
-#define GOBJ_SWITCH_DIR(gobj)   \
-    (gobj)->x_speed *= -1;      \
-    (gobj)->y_speed *= -1
+#define GAMEOBJECT_SWITCH_DIR(gameobject)   \
+    (gameobject)->x_speed *= -1;      \
+    (gameobject)->y_speed *= -1
 
-#define GOBJ_SWITCH_X_DIR(gobj) ((gobj)->x_speed *= -1)
-#define GOBJ_SWITCH_Y_DIR(gobj) ((gobj)->y_speed *= -1)
+#define GAMEOBJECT_SWITCH_X_DIR(gameobject) ((gameobject)->x_speed *= -1)
+#define GAMEOBJECT_SWITCH_Y_DIR(gameobject) ((gameobject)->y_speed *= -1)
 
-#define GOBJ_IS_MOVING(gobj) ((gobj)->heading | GOBJ_HEADING_NONE)
+#define GAMEOBJECT_IS_MOVING(gameobject) ((gameobject)->heading | GAMEOBJECT_HEADING_NONE)
 
-#define GOBJ_IS_HEADING_RIGHT(gobj) ((gobj)->heading & GOBJ_HEADING_RIGHT)
-#define GOBJ_IS_HEADING_LEFT(gobj) ((gobj)->heading & GOBJ_HEADING_LEFT)
-#define GOBJ_IS_HEADING_UP(gobj) ((gobj)->heading & GOBJ_HEADING_UP)
-#define GOBJ_IS_HEADING_DOWN(gobj) ((gobj)->heading & GOBJ_HEADING_DOWN)
+#define GAMEOBJECT_IS_HEADING_RIGHT(gameobject) ((gameobject)->heading & GAMEOBJECT_HEADING_RIGHT)
+#define GAMEOBJECT_IS_HEADING_LEFT(gameobject) ((gameobject)->heading & GAMEOBJECT_HEADING_LEFT)
+#define GAMEOBJECT_IS_HEADING_UP(gameobject) ((gameobject)->heading & GAMEOBJECT_HEADING_UP)
+#define GAMEOBJECT_IS_HEADING_DOWN(gameobject) ((gameobject)->heading & GAMEOBJECT_HEADING_DOWN)
 
-#define GOBJ_ANIM_CYCLE_COMPLETE(anim) anim->acc_ticks >= (anim)->ticks_per_frame
+#define GAMEOBJECT_ANIM_CYCLE_COMPLETE(anim) anim->acc_ticks >= (anim)->ticks_per_frame
 
-#define GOBJ_IS_NOT_MOVING(gobj) !GOBJ_IS_MOVING(gobj)
+#define GAMEOBJECT_IS_NOT_MOVING(gameobject) !GAMEOBJECT_IS_MOVING(gameobject)
 
 
-void gobj_init(GameObject *gobj, RECT *bounds, void *prim, u_short spawn_x, u_short spawn_y, short w, short h, short x_speed, short y_speed, u_char health);
+void GameObject_Init(GameObject *gameobject, RECT *bounds, void *prim, uint16_t spawn_x, uint16_t spawn_y, int16_t w, int16_t h, int16_t x_speed, int16_t y_speed, uint8_t health);
 /**
  * Draw the game object
  * @param game_object the game object image to draw
  */
-void gobj_draw(GameObject *game_object);
+void GameObject_Draw(GameObject *game_object);
 
 /**
  * Update the game object
- * @param game_object the game object to update
  * @param player how to interact with player
  */
-void gobj_tick(GameObject *game_object);
+void GameObject_Tick(GameObject *player);
 
-void gobj_camera_init(Camera *cam, GameObject *obj_in_focus);
-void gobj_camera_tick(Camera *cam);
+void GameObject_CameraInit(Camera *cam, GameObject *obj_in_focus);
+void GameObject_CameraTick(Camera *cam);
 
 #endif // PSX_GAME_OBJECT_H
