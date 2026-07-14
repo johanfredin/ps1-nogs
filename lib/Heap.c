@@ -14,7 +14,7 @@ void Heap_Init(void) {
 
 void *Heap_Malloc(const size_t n) {
     void *p = calloc3(1,n);
-    if (p == NULL) {
+    if (!p) {
         logr_log(ERROR, "Heap.c", "heap_malloc", "Null ptr returned from malloc, terminating...");
         exit(1);
     }
