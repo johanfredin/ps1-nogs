@@ -3,7 +3,7 @@
 //
 
 #include "Animation.h"
-#include "Logger.h"
+#include "Log.h"
 
 void Animation_Init(Animation *animation, const uint8_t cols, const uint8_t rows, const uint8_t ticks_per_frame, const uint8_t start_row) {
     animation->cols = cols;
@@ -39,8 +39,6 @@ Animation *Animation_Tick(Animation *anim) {
     anim->curr_row = curr_row;
     anim->curr_col = curr_col;
     anim->acc_ticks = acc_ticks;
-    logr_log(TRACE, "Animation.c", "anim_tick", "curr-row=%d, curr_col=%d, acc_ticks=%d", anim->curr_row, anim->curr_col,
-             anim->acc_ticks);
-
+    LOG_TRACE("curr-row=%d, curr_col=%d, acc_ticks=%d", anim->curr_row, anim->curr_col, anim->acc_ticks);
     return anim;
 }

@@ -8,9 +8,7 @@
 
 #define STR_NEQ(str1, str2) strcmp(str1, str2) != 0
 
-#define SET_STR_LEN(i, str)      \
-    while ((char)str[i]) \
-    i++
+#define SET_STR_LEN(i, str) { while (str[i++]); }
 
 #define STR_TO_LOWERCASE(str) \
     char *p;                  \

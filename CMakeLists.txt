@@ -30,6 +30,7 @@ add_executable(
         lib/Animation.h
         lib/Heap.h
         lib/Heap.c
+        lib/Log.h
 
         # NON LIBGS Projects
         projects/hello-debug-font/Main.c

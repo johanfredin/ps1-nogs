@@ -1,7 +1,20 @@
 #include "GameObject.h"
-#include "Logger.h"
+#include "Log.h"
 #include "GPU.h"
 #include "stddef.h"
+#include "stdio.h"
+
+#define LOG_GOBJ(level, gobj)                  \
+    LOG_DEBUG("*********************");             \
+    LOG_DEBUG("*   Game Object     *");             \
+    LOG_DEBUG("*********************");             \
+    LOG_DEBUG("w=%d", (gobj)->w);                   \
+    LOG_DEBUG("h=%d", (gobj)->h);                   \
+    LOG_DEBUG("x_speed=%d", (gobj)->x_speed);       \
+    LOG_DEBUG("y_speed=%d", (gobj)->y_speed);       \
+    LOG_DEBUG("health=%d", (gobj)->health);         \
+    LOG_DEBUG("spawn_x=%d", (gobj)->x);             \
+    LOG_DEBUG("spawn_y=%d", (gobj)->y)
 
 void GameObject_Init(GameObject *gameobject, RECT *bounds, void *prim, const uint16_t spawn_x, const uint16_t spawn_y, const int16_t w, const int16_t h, const int16_t x_speed, const int16_t y_speed, const uint8_t health) {
     gameobject->w = w;
@@ -16,7 +29,7 @@ void GameObject_Init(GameObject *gameobject, RECT *bounds, void *prim, const uin
     gameobject->can_move = 1;
     gameobject->bounds = bounds;
     setRECT(bounds, spawn_x, spawn_y, w, h);
-    LOGR_LOG_GOBJ(DEBUG, gameobject);
+    LOG_GOBJ(DEBUG, gameobject);
 }
 
 void GameObject_Tick(GameObject *game_object) {

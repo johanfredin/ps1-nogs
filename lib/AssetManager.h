@@ -25,6 +25,6 @@ void AssetManager_LoadTIMData(TIM_IMAGE *tim_data, const CdData *cd_data);
 void AssetManager_LoadSprite(SPRT *sprt, TIM_IMAGE *tim, const CdData *cd_data);
 void AssetManager_LoadPolyFT4(POLY_FT4 *poly_ft4, TIM_IMAGE *tim, const CdData *cd_data);
 void AssetManager_AudioInit(void);
-void AssetManager_TransferVAGToSPU(CdData *cd_data, u_long voice_channel);
+void AssetManager_TransferVAGToSPU(const CdData *cd_data, u_long voice_channel);
 
 #endif // PSX_ASSET_MANAGER_H

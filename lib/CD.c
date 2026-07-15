@@ -5,7 +5,8 @@
 
 #include "CD.h"
 #include "Heap.h"
-#include "Logger.h"
+#include "Log.h"
+#include "stdio.h"
 #include "StrUtils.h"
 #include "stdlib.h"
 
@@ -17,10 +18,10 @@
 
 void CD_Init(void) {
     if (CdInit()) {
-        logr_log(INFO, "CD.c", "cd_init", "LIBCD initialized");
+        LOG_INFO("LIBCD initialized");
         return;
     }
-    logr_log(ERROR, "CD.c", "cd_init", "LIBCD not initialized properly, terminating..."); \
+    LOG_ERR("LIBCD not initialized properly, terminating..."); \
     exit(1);
 }
 
@@ -39,11 +40,11 @@ CdData *CD_DataMalloc(char *name) {
 CdData *CD_Find(char *name, CdData **assets, const uint8_t assets_cnt) {
     for (int i = 0; i < assets_cnt; i++) {
         if (STR_EQ(assets[i]->name, name)) {
-            logr_log(TRACE, "CD.c", "cd_find", "Name=%s, found at index=%d", assets[i]->name, i);
+            LOG_TRACE("Name=%s, found at index=%d", assets[i]->name, i);
             return assets[i];
         }
     }
-    logr_log(ERROR, "CD.c", "cd_find", "No CdData with name='%s' in passed in array, terminating...", name);
+    LOG_ERR("No CdData with name='%s' in passed in array, terminating...", name);
     exit(1);
 }
 
@@ -54,19 +55,19 @@ void CD_AcquireData(CdData *cd_data) {
     strcpy(file_path_raw, "\\");
     strcat(file_path_raw, cd_data->name);
     strcat(file_path_raw, ";1");
-    logr_log(DEBUG, "CD.c", "cd_acquire_data", "Loading file from CD: %s", file_path_raw);
+    LOG_DEBUG("Loading file from CD: %s", file_path_raw);
 
     // Search for file on disc
     CdlFILE file_pos;
     if (CdSearchFile(&file_pos, file_path_raw) == NULL) {
-        logr_log(ERROR, "CD.c", "cd_acquire_data", "File=%s not found, terminating...", cd_data->name);
+        LOG_ERR("File=%s not found, terminating...", cd_data->name);
         exit(1);
     }
 
-    logr_log(TRACE, "CD.c", "cd_acquire_data", "file found");
-    logr_log(TRACE, "CD.c", "cd_acquire_data", "file size: %d", file_pos.size);
+    LOG_TRACE("file found");
+    LOG_TRACE("file size: %d", file_pos.size);
     const int32_t num_secs = (int32_t)(file_pos.size + (CD_SECTOR - 1)) / CD_SECTOR;
-    logr_log(TRACE, "CD.c", "cd_acquire_data", "seconds in: %d", num_secs);
+    LOG_TRACE("seconds in: %d", num_secs);
     CdControl(CdlSetloc, (u_char *) &file_pos.pos, 0);
     unsigned long *buff = Heap_Malloc(CD_SECTOR * num_secs);
     CdRead(num_secs, buff, CdlModeSpeed);
@@ -74,7 +75,7 @@ void CD_AcquireData(CdData *cd_data) {
 
     cd_data->file = buff;
     cd_data->sectors = num_secs;
-    logr_log(INFO, "CD.c", "cd_acquire_data", "File %s loaded from CD", cd_data->name);
+    LOG_INFO("File %s loaded from CD", cd_data->name);
 }
 
 void CD_PlayDATrack(CdDATrack *track) {

@@ -8,7 +8,7 @@
 
 #include "Heap.h"
 #include "StrUtils.h"
-#include "Logger.h"
+#include "Log.h"
 
 static size_t g_index = 0;
 static char *g_content = NULL;
@@ -162,7 +162,7 @@ static void get_str(JSON_Data *entry, const uint8_t type) {
         entry->value = str;
         entry->type.str = 1;
     } else {
-        logr_log(ERROR, "JSONParser.c", "get_str", "value=%c not one of 'k', 'v'\n", type);
+        LOG_ERR("value=%c not one of 'k', 'v'", type);
         exit(1);
     }
 }
@@ -170,7 +170,7 @@ static void get_str(JSON_Data *entry, const uint8_t type) {
 static void get_number(JSON_Data *entry) {
     char *num_str = get_numeric_str();
     if (strchr(num_str, '.')) {
-        logr_log(TRACE, "JSONParser.c", "get_number", "Floating point not implemented for ps1 and will not be parsed, key=%s", entry->key);
+        LOG_TRACE("Floating point not implemented for ps1 and will not be parsed, key=%s", entry->key);
     } else {
         int *i_ptr = Heap_Malloc(sizeof(int));
         *i_ptr = (int) strtol(num_str, NULL, 10);
@@ -252,7 +252,7 @@ static char *read_until(const char end_char, const bool include_end_char) {
         str[i] = c;
         c = next_ch();
         if (i >= size) {
-            logr_log(ERROR, "JSONParser.c", "read_until", "String exceeded max length of %i, accumulated string=%s\n", size, str);
+            LOG_ERR("String exceeded max length of %i, accumulated string=%s", size, str);
             exit(1);
         }
         i++;
@@ -276,7 +276,7 @@ static char *get_numeric_str() {
         str[i] = curr_ch();
         next_ch();
         if (i >= size) {
-            logr_log(ERROR, "JSONParser.c", "get_numeric_str", "Numeric string exceeded max length of %i, accumulated string=%s\n", size, str);
+            LOG_ERR("Numeric string exceeded max length of %i, accumulated string=%s\n", size, str);
             exit(1);
         }
     }

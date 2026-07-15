@@ -1,20 +1,41 @@
 #include "string.h"
 #include "stdlib.h"
 #include "TxtHandler.h"
-#include "../lib/MemUtils.h"
 #include "GPUBase.h"
-#include "../lib/Logger.h"
+#include "../lib/Log.h"
 
 #define DLG_CYCLE_COMPLETE(msg, dlg) (msg)->acc_ticks >= (dlg)->ticks_per_frame
 #define IS_STATIC_DIALOG(dlg) (dlg)->ticks_per_frame == 0
 #define TXT_MSG_CHARS_ACQUIRED(msg) (msg)->acc_chars == ((msg)->strlen)
 #define TXT_DLG_LAST_MSG_READ(dlg) !((dlg)->messages[dlg->n_messages - 1].active)
 
+#define LOGR_LOG_DLG(level, dlg) \
+    LOG_DEBUG("*********************");                           \
+    LOG_DEBUG("*   Dialog          *");                           \
+    LOG_DEBUG("*********************");                           \
+    LOG_DEBUG("id=%s", (dlg)->id);                                \
+    LOG_DEBUG("x=%d", (dlg)->x);                                  \
+    LOG_DEBUG("y=%d", (dlg)->y);                                  \
+    LOG_DEBUG("visible=%d", (dlg)->visible);                      \
+    LOG_DEBUG("ticks_per_frame=%d", (dlg)->ticks_per_frame);      \
+    LOG_DEBUG("n_messages=%d", (dlg)->n_messages)
+
+
+#define LOGR_LOG_MSG(level, msg) \
+    LOG_DEBUG("*********************");                   \
+    LOG_DEBUG("*   Message         *");                   \
+    LOG_DEBUG("*********************");                   \
+    LOG_DEBUG("strlen=%d", (msg)->strlen);                \
+    LOG_DEBUG("acc_chars=%d", (msg)->acc_chars);          \
+    LOG_DEBUG("active=%d", (msg)->active);                \
+    LOG_DEBUG("acc_ticks=%d", (msg)->acc_ticks)
+
+
 static const char FONT_CHARS[100] = "!\"#$%&'()*+,-./0123456789:;<=>?@"
                                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
                                     "abcdefghijklmnopqrstuvwxyz{\\|}~ \0";
 
-u_char g_active_msg_idx = 0;
+static u_char g_active_msg_idx = 0;
 
 Font *txt_fnt_init(char *name, u_char cw, u_char ch, u_char padding) {
     CdrData *cdr_data = cdr_read_file(name);

@@ -1,5 +1,19 @@
 #include "Frames.h"
-#include "../lib/MemUtils.h"
+
+#include "../lib/Heap.h"
+#include "../lib/Log.h"
+
+#define LOGR_LOG_TELEPORT(level, teleport)                      \
+    LOG_DEBUG("*********************");                         \
+    LOG_DEBUG("*   Teleport        *");                         \
+    LOG_DEBUG("*********************");                         \
+    LOG_DEBUG("x=%d", (&(teleport))->origin.x);                 \
+    LOG_DEBUG("y=%d", (&(teleport))->origin.y);                 \
+    LOG_DEBUG("w=%d", (&(teleport))->origin.w);                 \
+    LOG_DEBUG("h=%d", (&(teleport))->origin.h);                 \
+    LOG_DEBUG("dest_x=%d", (&(teleport))->dest_x);              \
+    LOG_DEBUG("dest_y=%d", (&(teleport))->dest_y);              \
+    LOG_DEBUG("dest_frame=%d", (&(teleport))->dest_frame)
 
 void insert_beginning(SpriteLayer **root, SpriteLayer *new_layer) {
     new_layer->next = *root;
@@ -27,9 +41,5 @@ void frames_insert_sl_sorted(SpriteLayer **root, SpriteLayer *new_layer) {
 }
 
 FR_TileSet *frames_malloc_fr_tileset() {
-    FR_TileSet *ts = MEM_MALLOC_3(FR_TileSet);
-    ts->source = NULL;
-    ts->sprite = NULL;
-    ts->start_id = 0;
-    return ts;
+    return Heap_Malloc(sizeof(FR_TileSet));
 }

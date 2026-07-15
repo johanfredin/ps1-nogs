@@ -5,37 +5,39 @@
 #ifndef PSX_DEV_TXTHANDLER_H
 #define PSX_DEV_TXTHANDLER_H
 
+#include <stdbool.h>
+
 #include "../lib/AssetManager.h"
 
 #define TXT_FNT_PADDING_DEFAULT 2
 
 typedef struct Font {
+    // Character width of font image
+    uint8_t cw;
+    // Character height of font image
+    uint8_t ch;
+    // Padding between characters
+    uint8_t padding;
     // The image representing the whole font image
     SPRT *fnt_sprite;
-    // Character width of font image
-    u_char cw;
-    // Character height of font image
-    u_char ch;
-    // Padding between characters
-    u_char padding;
 } Font;
 
 typedef struct Message {
     SPRT *fnt_sprites;
-    u_short strlen;
-    u_short acc_chars;
-    u_char active: 4;
-    u_char acc_ticks: 4;
+    uint16_t strlen;
+    uint16_t acc_chars;
+    uint8_t active: 4;
+    uint8_t acc_ticks: 4;
 } Message;
 
 typedef struct Dialog {
-    Message *messages;
+    uint8_t n_messages;
+    uint8_t x;
+    uint8_t y;
+    uint8_t ticks_per_frame: 7;
+    bool visible: 1;
     char *id;
-    u_char n_messages;
-    u_char x;
-    u_char y;
-    u_char ticks_per_frame: 7;
-    u_char visible: 1;
+    Message *messages;
 } Dialog;
 
 /**

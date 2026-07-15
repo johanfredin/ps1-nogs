@@ -2,7 +2,8 @@
 #include "Tiled.h"
 
 #include "Heap.h"
-#include "Logger.h"
+#include "Log.h"
+#include "stdio.h"
 #include "StrUtils.h"
 
 /**
@@ -13,34 +14,27 @@
  */
 #define TILED_VALIDATE_PROP(key, val)                                                                                           \
 if (STR_NEQ(key, "name")) {                                                                                                     \
-    logr_log(ERROR, "Tiled.h", "TILED_VALIDATE_PROP", "property key='name' expected here, instead was=%s, exiting...", key);    \
+    LOG_ERR("property key='name' expected here, instead was=%s, exiting...", key);    \
     exit(1);                                                                                                                    \
 }                                                                                                                               \
 if (STR_NEQ(val, "value")) {                                                                                                    \
-    logr_log(ERROR, "Tiled.h", "TILED_VALIDATE_PROP", "property key='value' expected here, instead was='%s', exiting...", val); \
+    LOG_ERR("property key='value' expected here, instead was='%s', exiting...", val); \
     exit(1);                                                                                                                    \
 }
 
 static void add_tile_layers_to_map(TileMap *tm, JSON_Data *jobj_root);
-
 static void add_data_to_layer(Tile_Layer *layer, JSON_Data *root);
-
 static void add_additional_properties_to_layer(Tile_Layer *layer, const JSON_Data *root);
-
 static void add_tile_sets_to_map(TileMap *tm, JSON_Data *root);
-
 static void add_object_layers_to_map(TileMap *tm, JSON_Data *root);
-
 static void add_teleport_layers_to_map(TileMap *tm, JSON_Data *root);
-
 static void add_dialog_layers_to_map(TileMap *tm, JSON_Data *root);
-
 static TileMap *malloc_tile_map();
 
 
 TileMap *Tiled_FromJSON(const JSON_Data *root) {
     if (root == NULL) {
-        logr_log(ERROR, "Tiled.c", "tiled_populate_from_json", "root is NULL");
+        LOG_ERR("root is NULL");
         exit(1);
     }
     TileMap *tm = malloc_tile_map();
@@ -56,9 +50,9 @@ TileMap *Tiled_FromJSON(const JSON_Data *root) {
         } else if (STR_EQ(key, "tilewidth")) {
             tm->tile_width = *(int *) value;
         } else if (STR_EQ(key, "layers")) {
-            add_tile_layers_to_map(tm, (JSON_Data *) value);
+            add_tile_layers_to_map(tm, value);
         } else if (STR_EQ(key, "tilesets")) {
-            add_tile_sets_to_map(tm, (JSON_Data *) value);
+            add_tile_sets_to_map(tm, value);
         }
     }
     return tm;
@@ -84,89 +78,86 @@ void Tiled_Destroy(TileMap *tm) {
 }
 
 void Tiled_Print(const uint8_t level, const TileMap *map) {
-    logr_log(level, "Tiled.c", "tiled_print_map", "Map parsed from JSON");
-    logr_log(level, "Tiled.c", "tiled_print_map", "-------------------- ");
-    logr_log(level, "Tiled.c", "tiled_print_map", "{ ");
-    logr_log(level, "Tiled.c", "tiled_print_map", "  bounds_cnt=%d", map->bounds_cnt);
-    logr_log(level, "Tiled.c", "tiled_print_map", "  teleports_cnt=%d", map->teleports_cnt);
-    logr_log(level, "Tiled.c", "tiled_print_map", "  tilesets_cnt=%d", map->tilesets_cnt);
-    logr_log(level, "Tiled.c", "tiled_print_map", "  width=%d ", map->width);
-    logr_log(level, "Tiled.c", "tiled_print_map", "  height=%d ", map->height);
-    logr_log(level, "Tiled.c", "tiled_print_map", "  tile_width=%d ", map->tile_width);
-    logr_log(level, "Tiled.c", "tiled_print_map", "  tile_height=%d ", map->tile_height);
-    logr_log(level, "Tiled.c", "tiled_print_map", "  layers_cnt=%d ", map->layers_cnt);
-
-    logr_log(level, "Tiled.c", "tiled_print_map", "  layers=[ ");
+    LOG_INFO("Map parsed from JSON");
+    LOG_INFO("-------------------- ");
+    LOG_INFO("{ ");
+    LOG_INFO("  bounds_cnt=%d", map->bounds_cnt);
+    LOG_INFO("  teleports_cnt=%d", map->teleports_cnt);
+    LOG_INFO("  tilesets_cnt=%d", map->tilesets_cnt);
+    LOG_INFO("  width=%d ", map->width);
+    LOG_INFO("  height=%d ", map->height);
+    LOG_INFO("  tile_width=%d ", map->tile_width);
+    LOG_INFO("  tile_height=%d ", map->tile_height);
+    LOG_INFO("  layers_cnt=%d ", map->layers_cnt);
+    LOG_INFO("  layers=[ ");
     for (const Tile_Layer *tile_layer = map->layers; tile_layer; tile_layer = tile_layer->next) {
-        logr_log(level, "Tiled.c", "tiled_print_map", "    { ");
-        logr_log(level, "Tiled.c", "tiled_print_map", "      name=%s ", tile_layer->name);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      type=%s ", tile_layer->type);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      id=%d ", tile_layer->id);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      x=%d ", tile_layer->x);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      y=%d ", tile_layer->y);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      width=%d ", tile_layer->width);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      height=%d ", tile_layer->height);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      visible=%d ", tile_layer->visible);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      layer_type=%s ", tile_layer->layer_type);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      prio=%d ", tile_layer->prio);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      active_sprites_cnt=%d ", tile_layer->active_sprites_cnt);
-        logr_log(level, "Tiled.c", "tiled_print_map", "    } ");
+        LOG_INFO("    { ");
+        LOG_INFO("      name=%s ", tile_layer->name);
+        LOG_INFO("      type=%s ", tile_layer->type);
+        LOG_INFO("      id=%d ", tile_layer->id);
+        LOG_INFO("      x=%d ", tile_layer->x);
+        LOG_INFO("      y=%d ", tile_layer->y);
+        LOG_INFO("      width=%d ", tile_layer->width);
+        LOG_INFO("      height=%d ", tile_layer->height);
+        LOG_INFO("      visible=%d ", tile_layer->visible);
+        LOG_INFO("      layer_type=%s ", tile_layer->layer_type);
+        LOG_INFO("      prio=%d ", tile_layer->prio);
+        LOG_INFO("      active_sprites_cnt=%d ", tile_layer->active_sprites_cnt);
+        LOG_INFO("    } ");
     }
-    logr_log(level, "Tiled.c", "tiled_print_map", "  ] ");
-    logr_log(level, "Tiled.c", "tiled_print_map", "  bounds=[ ");
+    LOG_INFO("  ] ");
+    LOG_INFO("  bounds=[ ");
     for (ObjectLayer_Bounds *bounds_layer = map->bounds; bounds_layer; bounds_layer = bounds_layer->next) {
-        logr_log(level, "Tiled.c", "tiled_print_map", "    { ");
-        logr_log(level, "Tiled.c", "tiled_print_map", "      id=%d ", bounds_layer->id);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      visible=%d ", bounds_layer->visible);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      x=%d ", bounds_layer->x);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      y=%d ", bounds_layer->y);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      width=%d ", bounds_layer->width);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      height=%d ", bounds_layer->height);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      visible=%d ", bounds_layer->visible);
-        logr_log(level, "Tiled.c", "tiled_print_map", "    } ");
+        LOG_INFO("    { ");
+        LOG_INFO("      id=%d ", bounds_layer->id);
+        LOG_INFO("      visible=%d ", bounds_layer->visible);
+        LOG_INFO("      x=%d ", bounds_layer->x);
+        LOG_INFO("      y=%d ", bounds_layer->y);
+        LOG_INFO("      width=%d ", bounds_layer->width);
+        LOG_INFO("      height=%d ", bounds_layer->height);
+        LOG_INFO("      visible=%d ", bounds_layer->visible);
+        LOG_INFO("    } ");
     }
-    logr_log(level, "Tiled.c", "tiled_print_map", "  ] ");
-    logr_log(level, "Tiled.c", "tiled_print_map", "  teleports=[ ");
-    for (const ObjectLayer_Teleport *teleports_layer = map->teleports; teleports_layer;
-         teleports_layer = teleports_layer->next) {
-        logr_log(level, "Tiled.c", "tiled_print_map", "    { ");
-        logr_log(level, "Tiled.c", "tiled_print_map", "      id=%d ", teleports_layer->id);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      visible=%d ", teleports_layer->visible);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      x=%d ", teleports_layer->x);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      y=%d ", teleports_layer->y);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      width=%d ", teleports_layer->width);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      height=%d ", teleports_layer->height);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      dest_frame=%d ", teleports_layer->dest_frame);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      dest_x=%d ", teleports_layer->dest_x);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      dest_y=%d ", teleports_layer->dest_y);
-        logr_log(level, "Tiled.c", "tiled_print_map", "    } ");
+    LOG_INFO("  ] ");
+    LOG_INFO("  teleports=[ ");
+    for (const ObjectLayer_Teleport *teleports_layer = map->teleports; teleports_layer; teleports_layer = teleports_layer->next) {
+        LOG_INFO("    { ");
+        LOG_INFO("      id=%d ", teleports_layer->id);
+        LOG_INFO("      visible=%d ", teleports_layer->visible);
+        LOG_INFO("      x=%d ", teleports_layer->x);
+        LOG_INFO("      y=%d ", teleports_layer->y);
+        LOG_INFO("      width=%d ", teleports_layer->width);
+        LOG_INFO("      height=%d ", teleports_layer->height);
+        LOG_INFO("      dest_frame=%d ", teleports_layer->dest_frame);
+        LOG_INFO("      dest_x=%d ", teleports_layer->dest_x);
+        LOG_INFO("      dest_y=%d ", teleports_layer->dest_y);
+        LOG_INFO("    } ");
     }
-    logr_log(level, "Tiled.c", "tiled_print_map", "  ] ");
-    logr_log(level, "Tiled.c", "tiled_print_map", "  dialogs=[ ");
+    LOG_INFO("  ] ");
+    LOG_INFO("  dialogs=[ ");
     for (const ObjectLayer_Dialog *dialog_layer = map->dialogs; dialog_layer; dialog_layer = dialog_layer->next) {
-        logr_log(level, "Tiled.c", "tiled_print_map", "    { ");
-        logr_log(level, "Tiled.c", "tiled_print_map", "      id=%d ", dialog_layer->id);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      visible=%d ", dialog_layer->visible);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      x=%d ", dialog_layer->x);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      y=%d ", dialog_layer->y);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      width=%d ", dialog_layer->width);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      height=%d ", dialog_layer->height);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      text=%s ", dialog_layer->text);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      max_chars=%d ", dialog_layer->max_chars);
-        logr_log(level, "Tiled.c", "tiled_print_map", "      n_lines=%d ", dialog_layer->n_lines);
-        logr_log(level, "Tiled.c", "tiled_print_map", "    } ");
+        LOG_INFO("    { ");
+        LOG_INFO("      id=%d ", dialog_layer->id);
+        LOG_INFO("      visible=%d ", dialog_layer->visible);
+        LOG_INFO("      x=%d ", dialog_layer->x);
+        LOG_INFO("      y=%d ", dialog_layer->y);
+        LOG_INFO("      width=%d ", dialog_layer->width);
+        LOG_INFO("      height=%d ", dialog_layer->height);
+        LOG_INFO("      text=%s ", dialog_layer->text);
+        LOG_INFO("      max_chars=%d ", dialog_layer->max_chars);
+        LOG_INFO("      n_lines=%d ", dialog_layer->n_lines);
+        LOG_INFO("    } ");
     }
-    logr_log(level, "Tiled.c", "tiled_print_map", "  ] ");
-    logr_log(level, "Tiled.c", "tiled_print_map", "  tile_sets=[ ");
+    LOG_INFO("  ] ");
+    LOG_INFO("  tile_sets=[ ");
     for (const Tile_Set *tile_set = map->tile_sets; tile_set; tile_set = tile_set->next) {
-        logr_log(level, "Tiled.c", "tiled_print_map", "    { ");
-        logr_log(level, "Tiled.c", "tiled_print_map", "       firstgid: %d", tile_set->firstgid);
-        logr_log(level, "Tiled.c", "tiled_print_map", "       source: %s", tile_set->source);
-        logr_log(level, "Tiled.c", "tiled_print_map", "    } ");
+        LOG_INFO("    { ");
+        LOG_INFO("       firstgid: %d", tile_set->firstgid);
+        LOG_INFO("       source: %s", tile_set->source);
+        LOG_INFO("    } ");
     }
-    logr_log(level, "Tiled.c", "tiled_print_map", "  ] ");
-
-    logr_log(level, "Tiled.c", "tiled_print_map", "} ");
+    LOG_INFO("  ] ");
+    LOG_INFO("} ");
 }
 
 static void add_tile_layers_to_map(TileMap *tm, JSON_Data *jobj_root) {
@@ -419,7 +410,7 @@ static void add_data_to_layer(Tile_Layer *layer, JSON_Data *root) {
     Layer_Data *data_root = Heap_Malloc(sizeof(Layer_Data));
     uint16_t active_sprites_cnt = 0;
     Layer_Data *data = data_root;
-    for (JSON_Data *curr = root; curr != NULL; curr = curr->next) {
+    for (const JSON_Data *curr = root; curr != NULL; curr = curr->next) {
         data->id = *(uint16_t *) curr->value;
         if (data->id > 0) {
             active_sprites_cnt++;
