@@ -14,7 +14,7 @@
 #define GPU_SCREEN_H 240
 
 //TODO should be dynamic
-#define GPU_OT_LEN 8
+#define GPU_OT_LEN 2048
 
 #define GPU_DR_TPAGE_INIT(dr_tpage, tim_image) \
     setDrawTPage((dr_tpage), 0, 1,  getTPage((tim_image)->mode & 0x3, 0, (tim_image)->prect->x, (tim_image)->prect->y))
@@ -31,7 +31,7 @@ void GPU_SortTile(TILE *tile);
 void GPU_SortPolyF3(POLY_F3 *poly);
 void GPU_SortPolyF4(POLY_F4 *poly, const DVECTOR *v);
 void GPU_SortPolyFT4(POLY_FT4 *poly, const DVECTOR *v);
-void GPU_SortDRTpage(DR_TPAGE *dr_tpage);
+void GPU_SortDRTPage(DR_TPAGE *dr_tpage);
 uint8_t GPU_GetCurrentFrame(void);
 
 

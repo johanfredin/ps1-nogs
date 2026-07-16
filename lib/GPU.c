@@ -17,7 +17,7 @@ static uint8_t current_buffer;
 
 void GPU_Init(void) {
     // Reset gpu and enable interrupts
-    ResetGraph(0);
+    ResetGraph(MODE_NTSC);
 
     // Set the video mode (default is NTSC so not required here)
     SetVideoMode(0);
@@ -131,7 +131,7 @@ void GPU_SortPolyF4(POLY_F4 *poly, const DVECTOR *v) {
     addPrim(&ot[current_buffer], poly);
 }
 
-void GPU_SortDRTpage(DR_TPAGE *dr_tpage) {
+void GPU_SortDRTPage(DR_TPAGE *dr_tpage) {
     addPrim(&ot[current_buffer], dr_tpage);
 }
 

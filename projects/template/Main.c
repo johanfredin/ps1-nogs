@@ -4,7 +4,7 @@
 #include "../../lib/Controller.h"
 #include "../../lib/Heap.h"
 
-Controller *controller;
+static Controller *controller;
 
 int main() {
     // Initialize system

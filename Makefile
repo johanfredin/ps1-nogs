@@ -11,6 +11,7 @@ $(THIS_DIR)lib/Heap.c \
 $(THIS_DIR)lib/Tiled.c \
 $(THIS_DIR)lib/GPU.c \
 $(THIS_DIR)lib/Animation.c \
+$(THIS_DIR)lib/PrimBuff.c \
 
 CPPFLAGS += -I$(THIS_DIR)third_party/psyq-iwyu/include -I$(THIS_DIR)lib/header
 LDFLAGS += -L$(THIS_DIR)third_party/psyq/lib

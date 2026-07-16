@@ -12,15 +12,11 @@ add_executable(
         lib/AssetManager.h
         lib/CD.h
         lib/JSONParser.h
-        lib/Logger.h
-        lib/MemUtils.h
         lib/StrUtils.h
         lib/Tiled.h
-        lib/SoundEffect.h
         lib/DPad.h
         lib/CD.c
         lib/JSONParser.c
-        lib/Logger.c
         lib/Tiled.c
         lib/Controller.h
         lib/Controller.c
@@ -45,6 +41,10 @@ add_executable(
         lib/AssetManager.c
         lib/Heap.c
         lib/Heap.h
+        lib/GTE.h
+        lib/GTE.c
+        lib/PrimBuff.c
+        lib/PrimBuff.h
 
 
 )

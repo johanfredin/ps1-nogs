@@ -16,7 +16,7 @@ int main() {
     Controller_Init();
     controller = CONTROLLER_READ_P1();
 
-    CdData ship_data = {};
+    CdData ship_data = {0};
     POLY_FT4 ship_poly;
     TIM_IMAGE tim;
 
