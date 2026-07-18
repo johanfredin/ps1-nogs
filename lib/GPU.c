@@ -81,57 +81,12 @@ void GPU_Display() {
     current_buffer = !current_buffer;
 }
 
-void GPU_InitPolyF3(POLY_F3 *poly, const SVECTOR *v, const uint8_t r, const uint8_t g, const uint8_t b) {
-    setPolyF3(poly);
-    setRGB0(poly, r, g, b);
-    setXY3(
-            poly,
-            v[0].vx, v[0].vy,
-            v[1].vx, v[1].vy,
-            v[2].vx, v[2].vy
-    );
+void GPU_InsertPrim(void *prim) {
+    addPrim(&ot[current_buffer], prim);
 }
 
-void GPU_SortSprite(SPRT *sprite) {
-    addPrim(&ot[current_buffer], sprite);
+void GPU_SortPrim(void *prim, const long otz) {
+    addPrim(&ot[current_buffer][otz], prim);
 }
 
-void GPU_SortSpriteWithTPage(SPRT *sprt, DR_TPAGE *dr_tpage) {
-    addPrim(&ot[current_buffer], sprt);
-    addPrim(&ot[current_buffer], dr_tpage);
-}
-
-void GPU_SortTile(TILE *tile) {
-    addPrim(&ot[current_buffer], tile);
-}
-
-void GPU_SortPolyF3(POLY_F3 *poly) {
-    addPrim(&ot[current_buffer], poly);
-}
-
-void GPU_SortPolyFT4(POLY_FT4 *poly, const DVECTOR *v) {
-    setXY4(
-            poly,
-            v[0].vx, v[0].vy,
-            v[1].vx, v[1].vy,
-            v[2].vx, v[2].vy,
-            v[3].vx, v[3].vy
-    );
-    addPrim(&ot[current_buffer], poly);
-}
-
-void GPU_SortPolyF4(POLY_F4 *poly, const DVECTOR *v) {
-    setXY4(
-            poly,
-            v[0].vx, v[0].vy,
-            v[1].vx, v[1].vy,
-            v[2].vx, v[2].vy,
-            v[3].vx, v[3].vy
-    );
-    addPrim(&ot[current_buffer], poly);
-}
-
-void GPU_SortDRTPage(DR_TPAGE *dr_tpage) {
-    addPrim(&ot[current_buffer], dr_tpage);
-}
 

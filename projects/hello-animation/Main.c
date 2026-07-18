@@ -74,10 +74,14 @@ int main() {
 
         FntPrint("\n cappy u=%d,v=%d, t=%d", cappy_sprite.u0, cappy_sprite.v0, current_anim->acc_ticks);
         setUV0(&cappy_sprite, ((current_anim->curr_col) * cappy_sprite.w), ((current_anim->curr_row) * cappy_sprite.h));
-        GPU_SortSpriteWithTPage(&cappy_sprite, &dr_tpage_cappy);
-        GPU_SortSpriteWithTPage(&pillar_sprite, &dr_tpage_pillar);
-        GPU_SortSpriteWithTPage(&tree_sprite, &dr_tpage_tree);
-        GPU_SortSpriteWithTPage(&skybox_sprite, &dr_tpage_skybox);
+        GPU_InsertPrim(&cappy_sprite);
+        GPU_InsertPrim(&dr_tpage_cappy);
+        GPU_InsertPrim(&pillar_sprite);
+        GPU_InsertPrim(&dr_tpage_pillar);
+        GPU_InsertPrim(&tree_sprite);
+        GPU_InsertPrim(&dr_tpage_tree);
+        GPU_InsertPrim(&skybox_sprite);
+        GPU_InsertPrim(&dr_tpage_skybox);
 
         GPU_Display();
     }

@@ -36,8 +36,6 @@ add_executable(
         projects/rotating-cube/Main.c
         lib/GameObject.h
         lib/GameObject.c
-        projects/hello-gte-1/Main.c
-        projects/hello-gte-2/Main.c
         lib/AssetManager.c
         lib/Heap.c
         lib/Heap.h

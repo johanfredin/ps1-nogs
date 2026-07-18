@@ -22,8 +22,8 @@ int main() {
         TILE *tile2 = PrimBuff_AcquireSlot(sizeof(TILE));
         init_tile(tile2, 50, 50, 32, 32, 0, 255, 255);
 
-        GPU_SortTile(tile1);
-        GPU_SortTile(tile2);
+        GPU_InsertPrim(tile1);
+        GPU_InsertPrim(tile2);
 
         FntPrint("Hello Flat Shaded TILE %d", sizeof(TILE));
         FntFlush(-1);

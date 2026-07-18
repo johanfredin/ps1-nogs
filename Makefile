@@ -10,6 +10,7 @@ $(THIS_DIR)lib/JSONParser.c \
 $(THIS_DIR)lib/Heap.c \
 $(THIS_DIR)lib/Tiled.c \
 $(THIS_DIR)lib/GPU.c \
+$(THIS_DIR)lib/GTE.c \
 $(THIS_DIR)lib/Animation.c \
 $(THIS_DIR)lib/PrimBuff.c \
 
